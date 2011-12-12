@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.badger.mr.music"
+    android:versionCode="1"
+    android:versionName=".1" android:installLocation="auto">
+
+    <uses-sdk android:minSdkVersion="10" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+
+    <application
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name" android:name=".MrMusic">
+        <activity android:label="@string/app_name" android:name="MediaSources">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PICK"/>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:scheme="daap"/>
+            </intent-filter>
+        </activity>
+        <activity android:configChanges="keyboard|orientation" android:name="org.mult.daap.ServerEditorActivity"></activity>
+        <activity android:label="@string/media_playback_activity" android:launchMode="singleTop" android:name="org.mult.daap.MediaPlayback"></activity>
+        <activity android:label="@string/song_browser_activity" android:name="org.mult.daap.SongBrowser">
+            <meta-data android:value="org.mult.daap.SearchActivity" android:name="android.app.default_searchable"/>
+        </activity>
+        <activity android:label="Search" android:name="org.mult.daap.SearchActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH"/>
+            </intent-filter>
+            <meta-data android:resource="@xml/searchable" android:name="android.app.searchable"/>
+        </activity>
+        <activity android:theme="@android:style/Theme.NoTitleBar" android:name="org.mult.daap.TabMain"></activity>
+        <activity android:label="@string/playlist_browser_activity" android:name="org.mult.daap.PlaylistBrowser"></activity>
+        <activity android:theme="@android:style/Theme.NoTitleBar" android:name="org.mult.daap.ArtistBrowser">
+            <meta-data android:value="org.mult.daap.SearchActivity" android:name="android.app.default_searchable"/>
+        </activity>
+        <activity android:theme="@android:style/Theme.NoTitleBar" android:name="org.mult.daap.AlbumBrowser">
+            <meta-data android:value=".org.mult.daap.SearchActivity" android:name="android.app.default_searchable"/>
+        </activity>
+        <activity android:name="org.mult.daap.ArtistAlbumBrowser">
+            <meta-data android:name="android.app.default_searchable" android:value=".org.mult.daap.SearchActivity"/>
+        </activity>
+        <activity android:label="@string/queue_browser_activity" android:name="org.mult.daap.QueueListBrowser"></activity>
+        <activity android:label="@string/add_server_menu_activity" android:name="org.mult.daap.AddServerMenu">
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity android:label="Preferences" android:name="org.mult.daap.Preferences"></activity>
+        <service android:name="org.mult.daap.MediaPlaybackService" android:description="@string/media_playback_service_desc"></service>
+        <receiver android:name="org.mult.daap.client.widget.DAAPClientAppWidgetOneProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name="org.mult.daap.MediaButtonIntentReceiver"></receiver>
+        <service android:name="DownloaderService" android:description="@string/downloader_service_desc"></service>
+    </application>
+
+</manifest>
