@@ -48,7 +48,8 @@ public final class R {
         public static final int ic_tab_artists_unselected=0x7f02001e;
         public static final int ic_tab_songs_selected=0x7f02001f;
         public static final int ic_tab_songs_unselected=0x7f020020;
-        public static final int stat_notify_musicplayer=0x7f020021;
+        public static final int icon=0x7f020021;
+        public static final int stat_notify_musicplayer=0x7f020022;
     }
     public static final class id {
         public static final int LinearLayout01=0x7f070020;
