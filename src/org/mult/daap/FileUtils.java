@@ -49,7 +49,7 @@ public class FileUtils {
     		songlist.add(songToCopy);
     		parentContext = c;
     		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(parentContext);
-    		savePath = mPrefs.getString("path_pref", Environment.getExternalStorageDirectory() + "/DAAP/");
+    		savePath = mPrefs.getString("path_pref", parentContext.getExternalFilesDir(Environment.DIRECTORY_MUSIC).toString());
     		enableNotification = false;
     		
     	}
