@@ -266,6 +266,7 @@ public class MediaPlayback extends Activity implements View.OnTouchListener,
 	private void setUpActivity() {
 		mAlbumName.setText(song.album);
 		mTrackName.setText(song.name);
+		mArtistName.setText(song.artist);
 		if (song.isLocal)
 			mSource.setText("Source: Local");
 		else
