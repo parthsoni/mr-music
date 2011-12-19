@@ -49,7 +49,7 @@ public class TabMain extends TabActivity implements Observer {
 		if (Contents.daapHost == null)
 			libSource.setText("Local Library (Touch to change)");
 		else
-			libSource.setText("Remote Library (Tough to change)");
+			libSource.setText("Remote Library (Touch to change)");
 		if (Contents.songList.size() == 0)
 		{
 			Log.i("TabMain","Playlist is empty. Loading the local list");
