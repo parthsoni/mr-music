@@ -6,6 +6,10 @@
 	<LinearLayout android:orientation="vertical"
 		android:layout_width="fill_parent" android:layout_height="fill_parent"
 		android:padding="5dp">
+		<TextView 
+		android:id="@+id/library_source" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:paddingTop="2dip"
+		android:paddingBottom="2dip" android:paddingLeft="5dip" />
 		<TabWidget android:id="@android:id/tabs"
 			android:layout_width="fill_parent" android:layout_height="wrap_content" />
 		<FrameLayout android:id="@android:id/tabcontent"
