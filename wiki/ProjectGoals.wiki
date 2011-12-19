@@ -1,0 +1,17 @@
+#summary Why Mr.Music?
+
+*Project Goals*
+
+Mr.Music was born from a desire to sync music to an Android phone without the messiness of actually sitting down at a computer and copying files.
+
+To that end, Mr.Music should:
+  # Connect to a remote music source
+  # Connect to a local (on device) music source
+  # Easily copy files from 1->2
+  # Play files regardless of source
+
+Other features that a music player have:
+  # Scrobble support
+  # Searchable
+  # Widgets/lockscreen controls
+  # and....
