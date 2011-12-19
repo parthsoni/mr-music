@@ -14,4 +14,5 @@ The following are features that will eventually be added to Mr.Music.
    * Upload from Local to remote SMB
  * Delete from local library
  * Auto sync between a remote source and local
+ * Remote UPnP share
  
