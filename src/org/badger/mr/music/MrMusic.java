@@ -7,6 +7,8 @@ public class MrMusic extends Application{
 
     private static Context context;
 
+  
+
     public void onCreate(){
         MrMusic.context=getApplicationContext();
     }
