@@ -11,7 +11,7 @@ To that end, Mr.Music should:
   # Easily copy files from 1->2
   # Play files regardless of source
 
-Other features that a music player have:
+Other features that a music player is expected to have:
   # Scrobble support
   # Searchable
   # Widgets/lockscreen controls
