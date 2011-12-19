@@ -1,4 +1,5 @@
 #summary Why Mr.Music?
+#labels Featured
 
 *Project Goals*
 
