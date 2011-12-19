@@ -1,11 +1,4 @@
-#summary One-sentence summary of this page.
-
-= Introduction =
-
-Help on finding and setting up a DAAP server.
-
-
-= Details =
+#summary Help on finding and setting up a DAAP server.
 
 The [http://en.wikipedia.org/wiki/Digital_Audio_Access_Protocol Wikipedia entry on DAAP] has a good breakdown of DAAP servers. 
 
