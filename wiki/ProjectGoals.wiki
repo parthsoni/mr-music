@@ -15,3 +15,5 @@ Other features that a music player have:
   # Searchable
   # Widgets/lockscreen controls
   # and....
+
+Check the RoadMap to see how we'll get there.
