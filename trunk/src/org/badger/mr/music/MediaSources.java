@@ -358,6 +358,7 @@ public class MediaSources extends Activity implements Observer {
 					//Local Music Only
 					try {
 						Contents.address = InetAddress.getLocalHost();
+						Contents.daapHost = null;
 					}
 					catch(UnknownHostException e) {
 						
@@ -453,8 +454,8 @@ public class MediaSources extends Activity implements Observer {
 				R.drawable.ic_menu_add);
 		menu.add(0, MENU_ABOUT, 0, R.string.about_info).setIcon(
 				R.drawable.ic_menu_about);
-		menu.add(0, MENU_DONATE, 0, R.string.donate).setIcon(
-				R.drawable.ic_menu_send);
+		//menu.add(0, MENU_DONATE, 0, R.string.donate).setIcon(
+		//		R.drawable.ic_menu_send);
 		menu.add(0, MENU_PREFS, 0, getString(R.string.preferences)).setIcon(
 				android.R.drawable.ic_menu_preferences);
 		return true;
@@ -574,11 +575,11 @@ public class MediaSources extends Activity implements Observer {
 			intent = new Intent(MediaSources.this, AddServerMenu.class);
 			startActivityForResult(intent, 1);
 			return true;
-		case MENU_DONATE:
-			intent = new Intent(Intent.ACTION_VIEW);
-			intent.addCategory(Intent.CATEGORY_BROWSABLE);
-			intent.setData(Uri.parse(donateLink));
-			startActivityForResult(intent, 1);
+		//case MENU_DONATE:
+		//	intent = new Intent(Intent.ACTION_VIEW);
+		//	intent.addCategory(Intent.CATEGORY_BROWSABLE);
+		//	intent.setData(Uri.parse(donateLink));
+		//	startActivityForResult(intent, 1);
 		}
 		return false;
 	}
