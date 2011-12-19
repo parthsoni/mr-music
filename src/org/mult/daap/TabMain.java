@@ -47,9 +47,9 @@ public class TabMain extends TabActivity implements Observer {
 		libSource = (TextView) findViewById(R.id.library_source);
 		libSource.setOnClickListener(libSourceListener);
 		if (Contents.daapHost == null)
-			libSource.setText("Local Library");
+			libSource.setText("Local Library (Touch to change)");
 		else
-			libSource.setText("Remote Library");
+			libSource.setText("Remote Library (Tough to change)");
 		if (Contents.songList.size() == 0)
 		{
 			Log.i("TabMain","Playlist is empty. Loading the local list");
