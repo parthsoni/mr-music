@@ -13,7 +13,9 @@ import org.mult.daap.client.Song;
 import org.mult.daap.client.SongDiscNumComparator;
 import org.mult.daap.client.SongTrackComparator;
 
+import org.badger.mr.music.DownloadBrowser;
 import org.badger.mr.music.R;
+import org.badger.mr.music.download.DownloadSong;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -210,7 +212,11 @@ public class SongBrowser extends ListActivity {
         }
         switch (aItem.getItemId()) {
         	case CONTEXT_SAVE:
-	        	new Thread(new FileCopier(s,getApplicationContext())).start();
+	        	//new Thread(new FileCopier(s,getApplicationContext())).start();
+        		Contents.downloadList.add(DownloadSong.toDownloadSong(s));
+            	Intent dlintent = new Intent(SongBrowser.this,
+            			DownloadBrowser.class);
+            	startActivity(dlintent);
 	        	return true;
             case CONTEXT_QUEUE:
                 if (Contents.queue.contains(s)) { // in

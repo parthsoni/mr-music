@@ -25,6 +25,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,9 +45,16 @@ public class DownloadBrowser extends ListActivity {
 	        
 	        setContentView(R.xml.download_browser);
 	        createList();
-	        if (Contents.downloader == null)
+	        if (Contents.downloader == null) {
+	        	Log.i("DownloadBrowser","Creating new Downloader");
 	        	Contents.downloader = new FileDownloader(this);
-	        Contents.downloader.execute((Void) null);
+	        	Contents.downloader.execute((Void) null);
+	        }
+	        else if (Contents.downloader.status == Contents.downloader.STATUS_IDLE) {
+	        	Log.i("DownloadBrowser","Idle Downloader Rebuilding");
+	        	Contents.downloader = new FileDownloader(this);
+	        	Contents.downloader.execute((Void) null);
+	        }
 	        
 	    }
 	 public void onDestroy() {

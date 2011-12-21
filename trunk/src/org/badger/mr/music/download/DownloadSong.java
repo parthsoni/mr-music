@@ -10,7 +10,8 @@ public class DownloadSong extends Song {
 	public static int STATUS_CANCELLED = 2;
 	public static int STATUS_NOTSTARTED = 3;
 	public static int STATUS_PAUSED = 4;
-	public static int STATUS_ERROR = 4;
+	public static int STATUS_ERROR = 5;
+	public static int STATUS_FILELOCAL = 6;
 	
 	public DownloadSong() {
 		super();
