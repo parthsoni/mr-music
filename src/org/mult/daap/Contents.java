@@ -7,6 +7,8 @@ import java.util.Comparator;
 import java.util.Random;
 import java.util.TreeMap;
 
+import org.badger.mr.music.download.DownloadSong;
+import org.badger.mr.music.local.FileDownloader;
 import org.mult.daap.background.GetSongsForPlaylist;
 import org.mult.daap.background.LoginManager;
 import org.mult.daap.background.SearchThread;
@@ -23,7 +25,7 @@ public class Contents {
     public static ArrayList<Song> filteredArtistSongList = new ArrayList<Song>();
     public static ArrayList<Song> queue = new ArrayList<Song>(10);
     public static ArrayList<Song> activeList = new ArrayList<Song>();
-    public static ArrayList<Song> downloadList = new ArrayList<Song>();
+    public static ArrayList<DownloadSong> downloadList = new ArrayList<DownloadSong>();
     public static ArrayList<String> stringElements = new ArrayList<String>();
     public static ArrayList<String> artistNameList = new ArrayList<String>();
     public static ArrayList<String> albumNameList = new ArrayList<String>();
@@ -41,6 +43,7 @@ public class Contents {
     public static boolean repeat = false;
     public static boolean lastUsedAlbumActivity = false;
     private static int position = 0;
+    public static FileDownloader downloader;
 
     public static void songListAdd(Song s) {
     	//Need to Prevent Dupes Somehow

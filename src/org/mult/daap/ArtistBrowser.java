@@ -9,7 +9,9 @@ import org.mult.daap.FileUtils.FileCopier;
 import org.mult.daap.client.Song;
 import org.mult.daap.client.StringIgnoreCaseComparator;
 
+import org.badger.mr.music.DownloadBrowser;
 import org.badger.mr.music.R;
+import org.badger.mr.music.download.DownloadSong;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -128,7 +130,13 @@ public class ArtistBrowser extends ListActivity {
                 startActivityForResult(intent, 1);
                 return true;
             case CONTEXT_SAVE_ARTIST:
-            	new Thread(new FileCopier(Contents.filteredArtistSongList,getApplicationContext())).start();
+            	//new Thread(new FileCopier(Contents.filteredArtistSongList,getApplicationContext())).start();
+            	for (Song s : Contents.filteredArtistSongList) {
+            		Contents.downloadList.add(DownloadSong.toDownloadSong(s));
+            	}
+            	Intent dlintent = new Intent(ArtistBrowser.this,
+            			DownloadBrowser.class);
+            	startActivity(dlintent);
             	return true;
         }
         return false;
