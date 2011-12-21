@@ -14,6 +14,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 
 
@@ -21,74 +22,97 @@ public class FileDownloader extends AsyncTask <Void, Integer, Integer>  {
 	
 	private String savePath;
 	private Context parentContext;
+	//private DownloadSong s;
+	public int status;
+	public static int STATUS_IDLE = 0;
+	public static int STATUS_RUNNING = 1;
 	
 	public FileDownloader(Context c){
+		status = STATUS_IDLE;
 		parentContext = c;
 		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(parentContext);
 		savePath = mPrefs.getString("path_pref", parentContext.getExternalFilesDir(Environment.DIRECTORY_MUSIC).toString());
-
 	}
 	
 
 	protected Integer doInBackground(Void... params) {
 		// TODO Auto-generated method stub
-		DownloadSong s = getNext();
-		
-		while (s != null) {
-			String safeArtist = s.artist.replace('/', '_');
-			String safeAlbum = s.album.replace("/", "_");
-			String safeName = s.name.replace("/", "_");
-			s.status = DownloadSong.STATUS_INPROGRESS;
-			try {
-		    	File directory = new File(savePath, safeArtist + "/" + safeAlbum);
-		    	directory.mkdirs();
-		    	File destination = new File(directory, s.track + "-" + safeName
-		    			+ "." + s.format);
-		    	InputStream songStream = Contents.daapHost
-					.getSongStream(s);
-		    	FileOutputStream destinationStream = new FileOutputStream(
-		    			destination);
-		    	byte[] buffer = new byte[1024];
-		    	int len;
-		    	int bytesDl = 0;
-		    	while ((len = songStream.read(buffer)) > 0) {
-		    		destinationStream.write(buffer, 0, len);
-		    		bytesDl += len;
-		    		publishProgress(bytesDl);
-		    	}
-		    	if (songStream != null)
-		    		songStream.close();
-		    	if (destinationStream != null)
-		    	{
-		    		destinationStream.close();
-		    	}
-		    	
-		    	destination.deleteOnExit();
-		    	s.status = DownloadSong.STATUS_COMPLETE;
-		    	//Refresh the Mediastore
-				//Add the local song to the media list
-
-		    } 
-		    catch (Exception e) {
-		    	s.status = DownloadSong.STATUS_COMPLETE;
-		    	e.printStackTrace();
-		    }
+		DownloadSong s;
+		Log.i("FileDownloader","Starting File Downloader");
+		int i = getNext();
+		status = STATUS_RUNNING;
+		while (i >= 0) {
+			s = Contents.downloadList.get(i);
+			if (s.isLocal) {
+				s.status = DownloadSong.STATUS_FILELOCAL;
+				Log.i("FileDownloader", s.name + " is already local");
+			}
+			else {
+				String safeArtist = s.artist.replace('/', '_');
+				String safeAlbum = s.album.replace("/", "_");
+				String safeName = s.name.replace("/", "_");
+				s.status = DownloadSong.STATUS_INPROGRESS;
+				try {
+			    	File directory = new File(savePath, safeArtist + "/" + safeAlbum);
+			    	directory.mkdirs();
+			    	File destination = new File(directory, s.track + "-" + safeName
+			    			+ "." + s.format);
+			    	InputStream songStream = Contents.daapHost
+						.getSongStream(s);
+			    	FileOutputStream destinationStream = new FileOutputStream(
+			    			destination);
+			    	Log.i("FileDownloader","Saving " + destination.toString());
+			    	Log.i("FileDownloader","Filesize: " + s.size);
+			    	byte[] buffer = new byte[1024];
+			    	int len;
+			    	int bytesDl = 0;
+			    	while ((len = songStream.read(buffer)) > 0) {
+			    		destinationStream.write(buffer, 0, len);
+			    		bytesDl += len;
+			    		publishProgress((int) (bytesDl*100)/s.size);
+			    		Log.i("FileDownloader","Downloaded Pct: " + (int) (bytesDl*100)/s.size );
+			    	}
+			    	if (songStream != null)
+			    		songStream.close();
+			    	if (destinationStream != null)
+			    	{
+			    		destinationStream.close();
+			    	}
+			    	Log.i("FileDownloader","Saved " + bytesDl + "bytes");
+			    	destination.deleteOnExit();
+			    	s.status = DownloadSong.STATUS_COMPLETE;
+			    	//Refresh the Mediastore
+					//Add the local song to the media list
+	
+			    } 
+			    catch (Exception e) {
+			    	s.status = DownloadSong.STATUS_ERROR;
+			    	e.printStackTrace();
+			    }
+				
+			}
+			i = getNext();
+			
 		}
-		
+		status = STATUS_IDLE;
 		return null;
 		
 	}
 	
-	private DownloadSong getNext(){
 	
-		DownloadSong nextSong = null;
-		for (DownloadSong dls : Contents.downloadList) {
-			if (dls.status == DownloadSong.STATUS_NOTSTARTED)
-				nextSong = dls;
-			break;
+	@SuppressWarnings("null")
+	private int getNext(){
+		int retVal = -1;
+		for (int i = 0; i < Contents.downloadList.size(); i = i + 1) { // Test and Loop
+			   if (Contents.downloadList.get(i).status == DownloadSong.STATUS_NOTSTARTED) {
+				   retVal = i;
+				   Log.i("DownloadSongs","Next Available Song: " + Contents.downloadList.get(i).name + "Index " + i);
+				   break;
+			   }
+			
 		}
-		return nextSong;
-		
+		return retVal;
+				
 	}
 
 }
