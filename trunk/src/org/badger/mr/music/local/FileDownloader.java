@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import org.badger.mr.music.download.DownloadSong;
 import org.mult.daap.Contents;
 import org.mult.daap.client.Song;
 
@@ -16,7 +17,7 @@ import android.preference.PreferenceManager;
 
 
 
-public class FileDownloader extends AsyncTask <Song, Integer, Integer>  {
+public class FileDownloader extends AsyncTask <Void, Integer, Integer>  {
 	
 	private String savePath;
 	private Context parentContext;
@@ -29,13 +30,15 @@ public class FileDownloader extends AsyncTask <Song, Integer, Integer>  {
 	}
 	
 
-	@Override
-	protected Integer doInBackground(Song... songs) {
+	protected Integer doInBackground(Void... params) {
 		// TODO Auto-generated method stub
-		for (Song s : songs) {
+		DownloadSong s = getNext();
+		
+		while (s != null) {
 			String safeArtist = s.artist.replace('/', '_');
 			String safeAlbum = s.album.replace("/", "_");
 			String safeName = s.name.replace("/", "_");
+			s.status = DownloadSong.STATUS_INPROGRESS;
 			try {
 		    	File directory = new File(savePath, safeArtist + "/" + safeAlbum);
 		    	directory.mkdirs();
@@ -47,8 +50,11 @@ public class FileDownloader extends AsyncTask <Song, Integer, Integer>  {
 		    			destination);
 		    	byte[] buffer = new byte[1024];
 		    	int len;
+		    	int bytesDl = 0;
 		    	while ((len = songStream.read(buffer)) > 0) {
 		    		destinationStream.write(buffer, 0, len);
+		    		bytesDl += len;
+		    		publishProgress(bytesDl);
 		    	}
 		    	if (songStream != null)
 		    		songStream.close();
@@ -58,18 +64,31 @@ public class FileDownloader extends AsyncTask <Song, Integer, Integer>  {
 		    	}
 		    	
 		    	destination.deleteOnExit();
-		    	
+		    	s.status = DownloadSong.STATUS_COMPLETE;
+		    	//Refresh the Mediastore
+				//Add the local song to the media list
+
 		    } 
 		    catch (Exception e) {
+		    	s.status = DownloadSong.STATUS_COMPLETE;
 		    	e.printStackTrace();
 		    }
-		    
 		}
-		//Refresh the Mediastore
-		//Add the local song to the media list
-
 		
 		return null;
 		
 	}
+	
+	private DownloadSong getNext(){
+	
+		DownloadSong nextSong = null;
+		for (DownloadSong dls : Contents.downloadList) {
+			if (dls.status == DownloadSong.STATUS_NOTSTARTED)
+				nextSong = dls;
+			break;
+		}
+		return nextSong;
+		
+	}
+
 }
