@@ -52,10 +52,10 @@ public final class R {
         public static final int stat_notify_musicplayer=0x7f020022;
     }
     public static final class id {
-        public static final int LinearLayout01=0x7f070020;
-        public static final int PasswordCancelButton=0x7f070023;
-        public static final int PasswordEditText=0x7f070021;
-        public static final int PasswordOkButton=0x7f070022;
+        public static final int LinearLayout01=0x7f070025;
+        public static final int PasswordCancelButton=0x7f070028;
+        public static final int PasswordEditText=0x7f070026;
+        public static final int PasswordOkButton=0x7f070027;
         public static final int albumname=0x7f070012;
         public static final int appwidget_one=0x7f07000b;
         public static final int artist=0x7f07000d;
@@ -64,15 +64,18 @@ public final class R {
         public static final int control_play=0x7f07000e;
         public static final int current_song_header=0x7f070010;
         public static final int currenttime=0x7f070018;
-        public static final int list_complex_caption=0x7f07001e;
-        public static final int list_complex_title=0x7f07001d;
-        public static final int list_header_title=0x7f07001f;
+        public static final int download_status_icon=0x7f070020;
+        public static final int label=0x7f070021;
+        public static final int library_source=0x7f07002a;
+        public static final int list_complex_caption=0x7f070023;
+        public static final int list_complex_title=0x7f070022;
+        public static final int list_header_title=0x7f070024;
         public static final int list_upcoming_songs=0x7f070017;
         public static final int loginCheckBox=0x7f070005;
         public static final int loginLabel=0x7f070006;
         public static final int next=0x7f07001b;
         public static final int pause=0x7f07001a;
-        public static final int playlistList=0x7f070024;
+        public static final int playlistList=0x7f070029;
         public static final int prev=0x7f070019;
         public static final int repeatButton=0x7f070016;
         public static final int serverCancelButton=0x7f07000a;
@@ -86,6 +89,9 @@ public final class R {
         public static final int serverUrlText=0x7f070003;
         public static final int shuffleButton=0x7f070015;
         public static final int source=0x7f070014;
+        public static final int status_icon=0x7f07001d;
+        public static final int status_progress=0x7f07001f;
+        public static final int status_text=0x7f07001e;
         public static final int title=0x7f07000c;
         public static final int totaltime=0x7f07001c;
         public static final int trackname=0x7f070013;
@@ -94,10 +100,12 @@ public final class R {
         public static final int add_server_menu=0x7f030000;
         public static final int appwidget_one=0x7f030001;
         public static final int audio_player=0x7f030002;
-        public static final int list_complex=0x7f030003;
-        public static final int list_header=0x7f030004;
-        public static final int password_prompt=0x7f030005;
-        public static final int preferences_screen=0x7f030006;
+        public static final int download_notifier=0x7f030003;
+        public static final int download_row=0x7f030004;
+        public static final int list_complex=0x7f030005;
+        public static final int list_header=0x7f030006;
+        public static final int password_prompt=0x7f030007;
+        public static final int preferences_screen=0x7f030008;
     }
     public static final class string {
         public static final int about_dialog_title=0x7f060000;
@@ -178,14 +186,15 @@ public final class R {
     }
     public static final class xml {
         public static final int appwidget_one=0x7f040000;
-        public static final int ic_tab_albums=0x7f040001;
-        public static final int ic_tab_artists=0x7f040002;
-        public static final int ic_tab_songs=0x7f040003;
-        public static final int long_list_text_view=0x7f040004;
-        public static final int music_browser=0x7f040005;
-        public static final int playlist_browser=0x7f040006;
-        public static final int searchable=0x7f040007;
-        public static final int server_prefs=0x7f040008;
-        public static final int tab_main=0x7f040009;
+        public static final int download_browser=0x7f040001;
+        public static final int ic_tab_albums=0x7f040002;
+        public static final int ic_tab_artists=0x7f040003;
+        public static final int ic_tab_songs=0x7f040004;
+        public static final int long_list_text_view=0x7f040005;
+        public static final int music_browser=0x7f040006;
+        public static final int playlist_browser=0x7f040007;
+        public static final int searchable=0x7f040008;
+        public static final int server_prefs=0x7f040009;
+        public static final int tab_main=0x7f04000a;
     }
 }
