@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import org.badger.mr.music.R;
 import org.badger.mr.music.download.DownloadSong;
 import org.mult.daap.Contents;
 import org.mult.daap.client.Song;
@@ -15,6 +16,8 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 
 
@@ -26,12 +29,19 @@ public class FileDownloader extends AsyncTask <Void, Integer, Integer>  {
 	public int status;
 	public static int STATUS_IDLE = 0;
 	public static int STATUS_RUNNING = 1;
+	private ProgressBar progressbar;
+	private TextView activedownload;
+	private String activetitle;
 	
-	public FileDownloader(Context c){
+	public FileDownloader(Context c, ProgressBar pg, TextView ad){
 		status = STATUS_IDLE;
 		parentContext = c;
 		SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(parentContext);
 		savePath = mPrefs.getString("path_pref", parentContext.getExternalFilesDir(Environment.DIRECTORY_MUSIC).toString());
+		progressbar = pg;
+		activedownload = ad;
+		
+		
 	}
 	
 
@@ -41,11 +51,18 @@ public class FileDownloader extends AsyncTask <Void, Integer, Integer>  {
 		Log.i("FileDownloader","Starting File Downloader");
 		int i = getNext();
 		status = STATUS_RUNNING;
+		
+		
 		while (i >= 0) {
 			s = Contents.downloadList.get(i);
+			//progressbar.setProgress(0);
+			//activedownload.setText(s.toString());
+			activetitle = s.toString();
+			publishProgress(0);
 			if (s.isLocal) {
 				s.status = DownloadSong.STATUS_FILELOCAL;
 				Log.i("FileDownloader", s.name + " is already local");
+				publishProgress(100);
 			}
 			else {
 				String safeArtist = s.artist.replace('/', '_');
@@ -70,7 +87,7 @@ public class FileDownloader extends AsyncTask <Void, Integer, Integer>  {
 			    		destinationStream.write(buffer, 0, len);
 			    		bytesDl += len;
 			    		publishProgress((int) (bytesDl*100)/s.size);
-			    		Log.i("FileDownloader","Downloaded Pct: " + (int) (bytesDl*100)/s.size );
+			    		//Log.i("FileDownloader","Downloaded Pct: " + (int) (bytesDl*100)/s.size );
 			    	}
 			    	if (songStream != null)
 			    		songStream.close();
@@ -98,7 +115,14 @@ public class FileDownloader extends AsyncTask <Void, Integer, Integer>  {
 		return null;
 		
 	}
-	
+
+@Override
+	protected void onProgressUpdate(Integer... value) {
+	   // TODO Auto-generated method stub
+	   progressbar.setProgress(value[0]);
+	   activedownload.setText(activetitle);
+	   //Log.i("FileDownloader","Progress:" + values[0]);
+	  }
 	
 	@SuppressWarnings("null")
 	private int getNext(){
