@@ -34,25 +34,32 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnCreateContextMenuListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class DownloadBrowser extends ListActivity {
+	ProgressBar dlprogress;
+	TextView activedownload;
+	
 	
 	 @Override
 	    public void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
 	        setResult(Activity.RESULT_OK);
 	        
-	        setContentView(R.xml.download_browser);
+	        setContentView(R.layout.download_browser);
+	        dlprogress =  (ProgressBar)findViewById(R.id.downloadprogress);
+	        dlprogress.setMax(100);
+	        activedownload = (TextView) findViewById(R.id.active_download);
 	        createList();
 	        if (Contents.downloader == null) {
 	        	Log.i("DownloadBrowser","Creating new Downloader");
-	        	Contents.downloader = new FileDownloader(this);
+	        	Contents.downloader = new FileDownloader(this,dlprogress,activedownload);
 	        	Contents.downloader.execute((Void) null);
 	        }
 	        else if (Contents.downloader.status == Contents.downloader.STATUS_IDLE) {
 	        	Log.i("DownloadBrowser","Idle Downloader Rebuilding");
-	        	Contents.downloader = new FileDownloader(this);
+	        	Contents.downloader = new FileDownloader(this,dlprogress,activedownload);
 	        	Contents.downloader.execute((Void) null);
 	        }
 	        
