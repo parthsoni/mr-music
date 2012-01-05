@@ -71,9 +71,9 @@ public class DownloadBrowser extends ListActivity {
 	    @Override
 	    public void onResume() {
 	        super.onResume();
-	        if (getListView() != null) {
-	            getListView().clearTextFilter();
-	        }
+	      //  if (getListView() != null) {
+	      //      getListView().clearTextFilter();
+	      //  }
 	        
 	    }
 

@@ -29,7 +29,8 @@ public class Contents {
     public static ArrayList<String> stringElements = new ArrayList<String>();
     public static ArrayList<String> artistNameList = new ArrayList<String>();
     public static ArrayList<String> albumNameList = new ArrayList<String>();
-    public static ArrayList<String> artistAlbumNameList = new ArrayList<String>();
+    public static ArrayList<String> filteredAlbumNameList = new ArrayList<String>();
+    //public static ArrayList<String> artistAlbumNameList = new ArrayList<String>();
     public static TreeMap<String, ArrayList<Integer>> ArtistElements = new TreeMap<String, ArrayList<Integer>>();
     public static TreeMap<String, ArrayList<Integer>> AlbumElements = new TreeMap<String, ArrayList<Integer>>();
     public static TreeMap<String, ArrayList<Integer>> ArtistAlbumElements = new TreeMap<String, ArrayList<Integer>>();
@@ -42,6 +43,8 @@ public class Contents {
     public static boolean shuffle = false;
     public static boolean repeat = false;
     public static boolean lastUsedAlbumActivity = false;
+    public static String artistFilter = "";
+    public static String albumFilter = "";
     private static int position = 0;
     public static FileDownloader downloader;
 
@@ -75,6 +78,10 @@ public class Contents {
     		Contents.songList.add(s);
             Contents.stringElements.add(s.toString());	
     	}
+    	if (!Contents.artistNameList.contains(s.artist))
+    		Contents.artistNameList.add(s.artist);
+    	if (!Contents.albumNameList.contains(s.album))
+    		Contents.albumNameList.add(s.album);
     	
     }
 
