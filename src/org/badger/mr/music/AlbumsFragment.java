@@ -154,26 +154,35 @@ public class AlbumsFragment extends FragmentActivity {
             menu.add(0,CONTEXT_SAVE_ALBUM,1, "Download Album");
         }
     	
-    	@Override
-        public boolean onContextItemSelected(MenuItem aItem) {
-            AdapterContextMenuInfo menuInfo = (AdapterContextMenuInfo) aItem
-                    .getMenuInfo();
-            String albName = new String(
-                    Contents.albumNameList.get(menuInfo.position));
+    	public void buildSelectedSongList() {
+    		String albName = new String(
+                    Contents.filteredAlbumNameList.get(menuInfo.position));
             if (albName.equals(getString(R.string.no_album_name))) {
                 albName = "";
             }
             Contents.filteredAlbumSongList.clear();
             for (Song s : Contents.songList) {
                 if (s.album.equals(albName)) {
-                    Contents.filteredAlbumSongList.add(s);
+                	if (Contents.artistFilter.length() > 0) {
+                		if (s.artist.equals(Contents.artistFilter))
+                			Contents.filteredSongList.add(s);
+                	}
+                	else
+                		Contents.filteredSongList.add(s);
                 }
             }
+    	}
+    	
+    	@Override
+        public boolean onContextItemSelected(MenuItem aItem) {
+            AdapterContextMenuInfo menuInfo = (AdapterContextMenuInfo) aItem
+                    .getMenuInfo();
+            buildSelectedSongList();
             switch (aItem.getItemId()) {
                 case CONTEXT_PLAY_ALBUM:
                     Intent intent = new Intent(getActivity().getBaseContext(),
                             MediaPlayback.class);
-                    Contents.setSongPosition(Contents.filteredAlbumSongList, 0);
+                    Contents.setSongPosition(Contents.filteredSongList, 0);
                     MediaPlayback.clearState();
                     NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
                     notificationManager.cancelAll();
@@ -181,7 +190,7 @@ public class AlbumsFragment extends FragmentActivity {
                     return true;
                 case CONTEXT_SAVE_ALBUM:
                 	//New Thread(new FileCopier(Contents.filteredAlbumSongList,getApplicationContext())).start();
-                	for (Song s : Contents.filteredAlbumSongList) {
+                	for (Song s : Contents.filteredSongList) {
                 		Contents.downloadList.add(DownloadSong.toDownloadSong(s));
                 	}
                 	Intent dlintent = new Intent(getActivity().getBaseContext(),
@@ -229,11 +238,40 @@ public class AlbumsFragment extends FragmentActivity {
         @Override public void onListItemClick(ListView l, View v, int position, long id) {
             // Insert desired behavior here.
             Log.i("AlbumsFragment", "Item clicked: " + id);
+            if (id == 0) {
+            	Contents.albumFilter = "";
+            }
+            else
+            {
+            	String album = Contents.filteredAlbumNameList.get(position);
+	            Contents.albumFilter = album;
+	            Contents.filteredSongNameList.clear();
+	            for (Song song : Contents.songList) {
+	                if (song.album.equals(album)) {
+	                	if (!Contents.filteredAlbumNameList.contains(song.album))
+	                		Contents.filteredAlbumNameList.add(song.album);
+	                    /**if (Contents.ArtistAlbumElements.containsKey(song.album)) {
+	                        Contents.ArtistAlbumElements.get(song.album).add(
+	                                song.id);
+	                    }
+	                    else {
+	                        ArrayList<Integer> t = new ArrayList<Integer>();
+	                        t.add(song.id);
+	                        Contents.ArtistAlbumElements.put(song.album, t);
+	                        Contents.filteredAlbumNameList.add(song.album);
+	                    }**/
+	                }
+	            }
+            }
+            final Intent intent = new Intent(getActivity(), MainPager.class);
+            intent.putExtra("tab", 2);
+            startActivity(intent);
+            getActivity().finish();
             
-                Intent intent = new Intent(getActivity().getBaseContext(), SongBrowser.class);
-                intent.putExtra("from", "album");
-                intent.putExtra("albumName", Contents.albumNameList.get(position));
-                startActivityForResult(intent, 1);
+            //    Intent intent = new Intent(getActivity().getBaseContext(), SongBrowser.class);
+            //    intent.putExtra("from", "album");
+            //    intent.putExtra("albumName", Contents.albumNameList.get(position));
+            //    startActivityForResult(intent, 1);
             }
             
            

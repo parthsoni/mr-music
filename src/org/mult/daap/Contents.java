@@ -23,6 +23,7 @@ public class Contents {
     public static ArrayList<Song> songList = new ArrayList<Song>();
     public static ArrayList<Song> filteredAlbumSongList = new ArrayList<Song>();
     public static ArrayList<Song> filteredArtistSongList = new ArrayList<Song>();
+    public static ArrayList<Song> filteredSongList = new ArrayList<Song>();
     public static ArrayList<Song> queue = new ArrayList<Song>(10);
     public static ArrayList<Song> activeList = new ArrayList<Song>();
     public static ArrayList<DownloadSong> downloadList = new ArrayList<DownloadSong>();
@@ -30,6 +31,7 @@ public class Contents {
     public static ArrayList<String> artistNameList = new ArrayList<String>();
     public static ArrayList<String> albumNameList = new ArrayList<String>();
     public static ArrayList<String> filteredAlbumNameList = new ArrayList<String>();
+    public static ArrayList<String> filteredSongNameList = new ArrayList<String>();
     //public static ArrayList<String> artistAlbumNameList = new ArrayList<String>();
     public static TreeMap<String, ArrayList<Integer>> ArtistElements = new TreeMap<String, ArrayList<Integer>>();
     public static TreeMap<String, ArrayList<Integer>> AlbumElements = new TreeMap<String, ArrayList<Integer>>();
