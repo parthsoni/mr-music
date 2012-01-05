@@ -200,6 +200,7 @@ public class ArtistsFragment extends FragmentActivity {
             else
             {
 	            String artist = Contents.artistNameList.get(position);
+	            Contents.artistFilter = artist;
 	            Contents.filteredAlbumNameList.clear();
 	            for (Song song : Contents.songList) {
 	                if (song.artist.equals(artist)) {
@@ -223,7 +224,7 @@ public class ArtistsFragment extends FragmentActivity {
 	            //intent.putExtra("from", "artist");
 	            //intent.putExtra("artistName", Contents.artistNameList.get(position));
 	            //startActivityForResult(intent, 1);
-	            Contents.artistFilter = artist;
+	            
 	            //Intent intent = new Intent(getActivity().getBaseContext(),
 	            //		AlbumsFragment.class);
 	            //startActivity(intent);
