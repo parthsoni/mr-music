@@ -1,5 +1,7 @@
 package org.mult.daap.background;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Observable;
@@ -69,6 +71,7 @@ public class GetSongsForPlaylist extends Observable implements Runnable {
                 Contents.AlbumElements.put(song.album, t);
             }
             Contents.songListAdd(song);
+            
         }
         Contents.sortLists();
         notifyAndSet(FINISHED);
@@ -99,6 +102,9 @@ public class GetSongsForPlaylist extends Observable implements Runnable {
 	            	//Collections.copy(rawList,(ArrayList<Song>) playList.getSongs());
 	            Log.i("GSFP","Playlist size: " + rawList.size());
 	        }
+        	else
+    			Contents.address = InetAddress.getLocalHost();
+
         	
             processContents(rawList);	
                             

@@ -15,7 +15,7 @@ import org.mult.daap.Contents;
 import org.mult.daap.MediaPlayback;
 import org.mult.daap.PlaylistBrowser;
 import org.mult.daap.Preferences;
-import org.mult.daap.TabMain;
+//import org.mult.daap.TabMain;
 
 
 import org.mult.daap.ServerEditorActivity;
@@ -166,10 +166,10 @@ public class MediaSources extends Activity implements Observer {
 		super.onResume();
 		List<Map<String, ?>> rememberedServers = new LinkedList<Map<String, ?>>();
 		try {
-			WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
-			if (!wifiManager.isWifiEnabled()) {
+			//WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+			//if (!wifiManager.isWifiEnabled()) {
 				wiFi = false;
-			} else {
+			/**} else {
 				wiFi = true;
 				fLock = new WrapMulticastLock(wifiManager);
 				// fLock.acquire();
@@ -178,7 +178,7 @@ public class MediaSources extends Activity implements Observer {
 				InetAddress wifi = InetAddress.getByAddress(wifiAddress);
 				jmDNSListener = new JmDNSListener(mDNSHandler, wifi);
 				labelChanger.sendEmptyMessageDelayed(0, 1000);
-			}
+			}**/
 			db = new DBAdapter(this);
 			db.open();
 			Cursor cursor = db.getAllServers();
@@ -200,9 +200,11 @@ public class MediaSources extends Activity implements Observer {
 					db.close();
 				}
 			}
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} finally {
+		} 
+		//catch (UnknownHostException e) {
+		//	e.printStackTrace();
+		//} 
+		finally {
 			db.close();
 		}
 		rememberedServers.add(createItem(getString(R.string.add_server),
@@ -356,13 +358,8 @@ public class MediaSources extends Activity implements Observer {
 				}
 				else if (position == count +2 ) {
 					//Local Music Only
-					try {
-						Contents.address = InetAddress.getLocalHost();
+					//Contents.address = InetAddress.getLocalHost();
 						Contents.daapHost = null;
-					}
-					catch(UnknownHostException e) {
-						
-					}
 					buildLocalPlaylist();
 					
 					//Log.i("MediaSources","Finished With Playlist");
@@ -428,7 +425,7 @@ public class MediaSources extends Activity implements Observer {
                 }
                 Log.i("MediaSources","Finished Loading Music, going to the Music Browser");
                 Contents.getSongsForPlaylist = null;
-                final Intent intent = new Intent(MediaSources.this, TabMain.class);
+                final Intent intent = new Intent(MediaSources.this, MainPager.class);
                 startActivity(intent);
             }
             else if (msg.what == GetSongsForPlaylist.EMPTY) {

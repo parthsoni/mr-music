@@ -121,7 +121,7 @@ public class FileDownloader extends AsyncTask <Void, Integer, Integer>  {
 	   // TODO Auto-generated method stub
 	   progressbar.setProgress(value[0]);
 	   activedownload.setText(activetitle);
-	   //Log.i("FileDownloader","Progress:" + values[0]);
+	  // Log.i("FileDownloader","Progress:" + value[0]);
 	  }
 	
 	@SuppressWarnings("null")

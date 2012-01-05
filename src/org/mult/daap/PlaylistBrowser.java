@@ -7,6 +7,7 @@ import java.util.Observer;
 import org.mult.daap.background.GetSongsForPlaylist;
 import org.mult.daap.client.daap.DaapPlaylist;
 
+import org.badger.mr.music.MainPager;
 import org.badger.mr.music.R;
 
 import android.app.Activity;
@@ -137,7 +138,7 @@ public class PlaylistBrowser extends Activity implements Observer {
                     pd.dismiss();
                 }
                 Contents.getSongsForPlaylist = null;
-                Intent intent = new Intent(PlaylistBrowser.this, TabMain.class);
+                Intent intent = new Intent(PlaylistBrowser.this, MainPager.class);
                 startActivityForResult(intent, 1);
             }
             else if (msg.what == GetSongsForPlaylist.EMPTY) {

@@ -59,7 +59,7 @@ public class ArtistAlbumBrowser extends ListActivity {
             return;
         }
         artistName = getIntent().getExtras().getString("artistName");
-        setTitle(artistName);
+       /** setTitle(artistName);
         if (Contents.artistAlbumNameList.size() == 0) {
             for (Map.Entry<String, ArrayList<Integer>> entry : Contents.ArtistAlbumElements
                     .entrySet()) {
@@ -74,7 +74,7 @@ public class ArtistAlbumBrowser extends ListActivity {
             }
             Comparator<String> snicc = new StringIgnoreCaseComparator();
             Collections.sort(Contents.artistAlbumNameList, snicc);
-        }
+        }**/
         setContentView(R.xml.music_browser);
         createList();
     }
@@ -90,7 +90,7 @@ public class ArtistAlbumBrowser extends ListActivity {
         albumList = (ListView) findViewById(android.R.id.list);
         MyIndexerAdapter<String> adapter = new MyIndexerAdapter<String>(
                 getApplicationContext(), R.xml.long_list_text_view,
-                Contents.artistAlbumNameList);
+                Contents.filteredAlbumNameList);
         setListAdapter(adapter);
         albumList.setOnItemClickListener(musicGridListener);
         albumList.setFastScrollEnabled(true);
@@ -111,7 +111,7 @@ public class ArtistAlbumBrowser extends ListActivity {
         AdapterContextMenuInfo menuInfo = (AdapterContextMenuInfo) aItem
                 .getMenuInfo();
         String albName = new String(
-                Contents.artistAlbumNameList.get(menuInfo.position));
+                Contents.filteredAlbumNameList.get(menuInfo.position));
         if (albName.equals(getString(R.string.no_album_name))) {
             albName = "";
         }
@@ -155,7 +155,7 @@ public class ArtistAlbumBrowser extends ListActivity {
                     SongBrowser.class);
             intent.putExtra("from", "album");
             intent.putExtra("albumName",
-                    Contents.artistAlbumNameList.get(position));
+                    Contents.filteredAlbumNameList.get(position));
             startActivityForResult(intent, 1);
         }
     };

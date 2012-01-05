@@ -4,7 +4,7 @@
     android:versionCode="5"
     android:versionName="0.5" android:installLocation="auto">
 
-    <uses-sdk android:minSdkVersion="10" />
+    <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="10"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
@@ -34,16 +34,12 @@
             <meta-data android:resource="@xml/searchable" android:name="android.app.searchable"/>
         </activity>
         <activity android:theme="@android:style/Theme.NoTitleBar" android:name="org.mult.daap.TabMain">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
         <activity android:label="@string/playlist_browser_activity" android:name="org.mult.daap.PlaylistBrowser"></activity>
         <activity android:theme="@android:style/Theme.NoTitleBar" android:name="org.mult.daap.ArtistBrowser">
             <meta-data android:value="org.mult.daap.SearchActivity" android:name="android.app.default_searchable"/>
         </activity>
-        <activity android:theme="@android:style/Theme.NoTitleBar" android:name="org.mult.daap.AlbumBrowser">
+        <activity android:theme="@android:style/Theme.NoTitleBar" android:name="AlbumsFragment">
             <meta-data android:value=".org.mult.daap.SearchActivity" android:name="android.app.default_searchable"/>
         </activity>
         <activity android:name="org.mult.daap.ArtistAlbumBrowser">
@@ -66,6 +62,12 @@
         <receiver android:name="org.mult.daap.MediaButtonIntentReceiver"></receiver>
         <service android:name="DownloaderService" android:description="@string/downloader_service_desc"></service>
         <activity android:name="DownloadBrowser"></activity>
+        <activity android:name="MainPager">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

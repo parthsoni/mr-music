@@ -157,11 +157,11 @@ public class ArtistBrowser extends ListActivity {
                         ArrayList<Integer> t = new ArrayList<Integer>();
                         t.add(song.id);
                         Contents.ArtistAlbumElements.put(song.album, t);
-                        Contents.artistAlbumNameList.add(song.album);
+                        Contents.filteredAlbumNameList.add(song.album);
                     }
                 }
             }
-            Contents.artistAlbumNameList.clear();
+            Contents.filteredAlbumNameList.clear();
             Intent intent = new Intent(ArtistBrowser.this,
                     ArtistAlbumBrowser.class);
             intent.putExtra("from", "artist");
