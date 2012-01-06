@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
-import org.mult.daap.Contents;
+//import org.mult.daap.Contents;
+import org.badger.mr.music.library.Library;
 import org.mult.daap.MediaPlayback;
 import org.mult.daap.background.GetSongsForPlaylist;
 
@@ -47,11 +48,11 @@ public class MainPager extends FragmentActivity implements Observer {
         libSource = (TextView) findViewById(R.id.lib_source);
 		libSource.setOnClickListener(libSourceListener);
 		
-		if (Contents.daapHost == null)
+		if (Library.daapHost == null)
 			libSource.setText("Local Library (Touch to change)");
 		else
 			libSource.setText("Remote Library (Touch to change)");
-		if (Contents.songList.size() == 0)
+		if (Library.songs.size() == 0)
 		{
 			Log.i("TabMain","Playlist is empty. Loading the local list");
 			
@@ -97,7 +98,7 @@ public class MainPager extends FragmentActivity implements Observer {
                     pd.dismiss();
                 }
                 Log.i("TabMain","Finished Loading Music, continuing to the music browser");
-                Contents.getSongsForPlaylist = null;
+                Library.getSongsForPlaylist = null;
                 
                 //mTabHost.setCurrentTab(0);
                 final Intent intent = new Intent(MainPager.this, MainPager.class);
@@ -108,7 +109,7 @@ public class MainPager extends FragmentActivity implements Observer {
                 if (pd != null) {
                     pd.dismiss();
                 }
-                Contents.getSongsForPlaylist = null;
+                Library.getSongsForPlaylist = null;
                 Toast tst = Toast.makeText(MainPager.this,
                         getString(R.string.empty_playlist), Toast.LENGTH_LONG);
                 tst.setGravity(Gravity.CENTER, tst.getXOffset() / 2,
@@ -137,10 +138,10 @@ public class MainPager extends FragmentActivity implements Observer {
 		Log.i("TabMain","Building the local playlist");
     	NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
-        Contents.clearLists();
+        Library.clearLists();
         MediaPlayback.clearState();
         GetSongsForPlaylist gsfp = new GetSongsForPlaylist();
-        Contents.getSongsForPlaylist = gsfp;
+        Library.getSongsForPlaylist = gsfp;
         gsfp.addObserver(this);
         gsfp.activityContext = this.getBaseContext();
         Thread thread = new Thread(gsfp);

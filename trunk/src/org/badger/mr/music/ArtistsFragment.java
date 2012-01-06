@@ -1,48 +1,31 @@
 package org.badger.mr.music;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
-
-import org.badger.mr.music.MainPager.TabsAdapter;
-import org.badger.mr.music.download.DownloadSong;
-import org.mult.daap.ArtistAlbumBrowser;
-import org.mult.daap.ArtistBrowser;
+import org.badger.mr.music.library.Library;
+import org.badger.mr.music.library.Artist;
+import org.badger.mr.music.ArtistListAdapter;
 import org.mult.daap.MediaPlayback;
-import org.mult.daap.MyIndexerAdapter;
 import org.mult.daap.Preferences;
-//import org.mult.daap.ArtistBrowser;
-import org.mult.daap.Contents;
-//import org.mult.daap.MyIndexerAdapter;
-import org.mult.daap.client.Song;
 
 
-import android.app.Activity;
+
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 //import com.example.android.supportv4.app.LoaderCustomSupport.AppListFragment;
@@ -69,7 +52,7 @@ public class ArtistsFragment extends FragmentActivity {
     
     public static class ArtistListFragment extends ListFragment
      {
-    	MyIndexerAdapter<String> adapter;
+    	ArtistListAdapter<Artist> adapter;
     	private static final int MENU_SEARCH = 3;
         private static final int CONTEXT_PLAY_ARTIST = 4;
         private static final int CONTEXT_SAVE_ARTIST = 5;
@@ -88,15 +71,14 @@ public class ArtistsFragment extends FragmentActivity {
             setHasOptionsMenu(true);
             
             //Remove the All Artists before sorting
-            if (Contents.artistNameList.size() > 0)
-            	Contents.artistNameList.remove(0);
+            //if (Contents.artistNameList.size() > 0)
+            //	Contents.artistNameList.remove(0);
             
             // Create an empty adapter we will use to display the loaded data.
-            KeyComparator kc = new KeyComparator();
-            Collections.sort(Contents.artistNameList,kc);
-            adapter = new MyIndexerAdapter<String>(MrMusic.context, R.xml.long_list_text_view, Contents.artistNameList);
-            if (!Contents.artistNameList.contains("All Artists"))
-            	adapter.insert("All Artists", 0);
+            Log.i("AristListFragment","Creating Artist List " + Library.artists.size() );
+            adapter = new ArtistListAdapter<Artist>(MrMusic.context, R.xml.long_list_text_view, Library.artists);
+            //if (!Contents.artistNameList.contains("All Artists"))
+            //	adapter.insert("All Artists", 0);
             Log.i("ArtistListFragment","Created Artist Adapter. Items: " +adapter.getCount());
             setListAdapter(adapter);
              
@@ -122,23 +104,16 @@ public class ArtistsFragment extends FragmentActivity {
         public boolean onContextItemSelected(MenuItem aItem) {
             AdapterContextMenuInfo menuInfo = (AdapterContextMenuInfo) aItem
                     .getMenuInfo();
-            String albName = new String(
-                    Contents.artistNameList.get(menuInfo.position));
-            if (albName.equals(getString(R.string.no_artist_name))) {
-                albName = "";
-            }
-            Contents.filteredArtistSongList.clear();
-            for (Song s : Contents.songList) {
-                if (s.artist.equals(albName)) {
-                    Contents.filteredArtistSongList.add(s);
-                }
-            }
+            
+            Artist artist = Library.artists.get(menuInfo.position);
+            Library.artistFilter = artist.toString();
+            Library.setFilters();
             switch (aItem.getItemId()) {
                 case CONTEXT_PLAY_ARTIST:
                     Intent intent = new Intent(getActivity().getBaseContext(),
                             MediaPlayback.class);
                     
-                    Contents.setSongPosition(Contents.filteredArtistSongList, 0);
+                    Library.setPlayQueue();
                     MediaPlayback.clearState();
                     NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
                     notificationManager.cancelAll();
@@ -146,9 +121,7 @@ public class ArtistsFragment extends FragmentActivity {
                     return true;
                 case CONTEXT_SAVE_ARTIST:
                 	//new Thread(new FileCopier(Contents.filteredArtistSongList,getApplicationContext())).start();
-                	for (Song s : Contents.filteredArtistSongList) {
-                		Contents.downloadList.add(DownloadSong.toDownloadSong(s));
-                	}
+                	Library.addToDownloadQueue(Library.filteredSongs);
                 	Intent dlintent = new Intent(getActivity().getBaseContext(),
                 			DownloadBrowser.class);
                 	startActivity(dlintent);
@@ -194,43 +167,15 @@ public class ArtistsFragment extends FragmentActivity {
     	@Override public void onListItemClick(ListView l, View v, int position, long id) {
             // Insert desired behavior here.
             Log.i("ArtistsFragment", "Item clicked: " + id);
-            if (id == 0) {
-            	Contents.artistFilter = "";
-            }
-            else
-            {
-	            String artist = Contents.artistNameList.get(position);
-	            Contents.artistFilter = artist;
-	            Contents.filteredAlbumNameList.clear();
-	            for (Song song : Contents.songList) {
-	                if (song.artist.equals(artist)) {
-	                	if (!Contents.filteredAlbumNameList.contains(song.album))
-	                		Contents.filteredAlbumNameList.add(song.album);
-	                    /**if (Contents.ArtistAlbumElements.containsKey(song.album)) {
-	                        Contents.ArtistAlbumElements.get(song.album).add(
-	                                song.id);
-	                    }
-	                    else {
-	                        ArrayList<Integer> t = new ArrayList<Integer>();
-	                        t.add(song.id);
-	                        Contents.ArtistAlbumElements.put(song.album, t);
-	                        Contents.filteredAlbumNameList.add(song.album);
-	                    }**/
-	                }
-	            }
-	            //Contents.artistAlbumNameList.clear();
-	            //Intent intent = new Intent(getActivity().getBaseContext(),
-	            //        ArtistAlbumBrowser.class);
-	            //intent.putExtra("from", "artist");
-	            //intent.putExtra("artistName", Contents.artistNameList.get(position));
-	            //startActivityForResult(intent, 1);
-	            
-	            //Intent intent = new Intent(getActivity().getBaseContext(),
-	            //		AlbumsFragment.class);
-	            //startActivity(intent);
-	            
-	            //MrMusic.switchTab(1);
-            }
+            //if (id == 0) {
+            //	Library.artistFilter = "";
+            //}
+            //else
+            //{
+	            Artist artist = Library.artists.get(position);
+	            Library.artistFilter = artist.toString();
+	            Library.setFilters();
+            //}
             
             final Intent intent = new Intent(getActivity(), MainPager.class);
             intent.putExtra("tab", 1);

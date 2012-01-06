@@ -3,7 +3,8 @@ package org.mult.daap.client.daap.request;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.mult.daap.client.Song;
+
+import org.badger.mr.music.library.Song;
 import org.mult.daap.client.daap.DaapPlaylist;
 
 import android.util.Log;

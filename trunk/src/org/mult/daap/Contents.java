@@ -7,12 +7,14 @@ import java.util.Comparator;
 import java.util.Random;
 import java.util.TreeMap;
 
+import org.badger.mr.music.R;
 import org.badger.mr.music.download.DownloadSong;
+import org.badger.mr.music.library.Song;
 import org.badger.mr.music.local.FileDownloader;
 import org.mult.daap.background.GetSongsForPlaylist;
 import org.mult.daap.background.LoginManager;
 import org.mult.daap.background.SearchThread;
-import org.mult.daap.client.Song;
+
 import org.mult.daap.client.SongNameComparator;
 import org.mult.daap.client.StringIgnoreCaseComparator;
 import org.mult.daap.client.daap.DaapHost;
@@ -146,4 +148,26 @@ public class Contents {
             queue.add(s);
         }
     }
+    
+    public static void buildSelectedSongList(int pos) {
+		String albName = new String(
+                Contents.filteredAlbumNameList.get(pos));
+        if (albName.equals("(No Album Name)")) {
+            albName = "";
+        }
+        Contents.filteredSongList.clear();
+        if (pos == 0)
+        	Contents.filteredSongList.addAll(songList);
+        for (Song s : Contents.songList) {
+            if (s.album.equals(albName)) {
+            	if (Contents.artistFilter.length() > 0) {
+            		if (s.artist.equals(Contents.artistFilter))
+            			Contents.filteredSongList.add(s);
+            	}
+            	else
+            		Contents.filteredSongList.add(s);
+            }
+        }
+	}
+    
 }

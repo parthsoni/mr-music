@@ -9,8 +9,9 @@ package org.mult.daap.client.daap;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.badger.mr.music.library.Song;
 import org.mult.daap.client.Playlist;
-import org.mult.daap.client.Song;
+
 import org.mult.daap.client.daap.request.BadResponseCodeException;
 import org.mult.daap.client.daap.request.SinglePlaylistRequest;
 

@@ -3,8 +3,9 @@ package org.mult.daap.background;
 import java.util.ArrayList;
 import java.util.Observable;
 
+import org.badger.mr.music.library.Song;
 import org.mult.daap.Contents;
-import org.mult.daap.client.Song;
+
 
 public class SearchThread extends Observable implements Runnable {
    public final static Integer INITIATED = new Integer(-1);

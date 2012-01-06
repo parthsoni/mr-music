@@ -5,13 +5,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
 
-import org.mult.daap.FileUtils.FileCopier;
-import org.mult.daap.client.Song;
+
 import org.mult.daap.client.StringIgnoreCaseComparator;
 
 import org.badger.mr.music.DownloadBrowser;
 import org.badger.mr.music.R;
 import org.badger.mr.music.download.DownloadSong;
+import org.badger.mr.music.library.Song;
 
 import android.app.Activity;
 import android.app.AlertDialog;

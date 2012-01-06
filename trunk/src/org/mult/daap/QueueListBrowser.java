@@ -2,9 +2,10 @@ package org.mult.daap;
 
 import java.util.ArrayList;
 
-import org.mult.daap.client.Song;
+
 
 import org.badger.mr.music.R;
+import org.badger.mr.music.library.Song;
 
 import android.app.Activity;
 import android.app.NotificationManager;

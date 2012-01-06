@@ -21,7 +21,12 @@
  * along with "one 2 oh my god"; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
-package org.mult.daap.client;
+package org.badger.mr.music.library;
+
+import org.mult.daap.client.Host;
+
+import android.provider.MediaStore;
+import android.util.Log;
 
 
 
@@ -60,29 +65,84 @@ public class Song implements Comparable<Object> {
 		track = -1;
 		genre = "";
 		format = "";
+		time = 0;
+		size = 0;
 		// compilation = false;
 		host = null;
 		isLocal = false;
 		localPath = "";
 		// status = Song.STATUS_OK;
+
 	}
 
+	public boolean isSame(Song another) {
+		return isSame(another.artist, another.album, another.name);
+				
+		    		
+	}
+	
+	public boolean isSame(String otherartist, String otheralbum, String othertitle) {
+		boolean ret;
+		Log.i("Song","Comparing " + othertitle + " to " + this.name);
+		ret = MediaStore.Audio.keyFor(this.name).equals(MediaStore.Audio.keyFor(othertitle)) &&
+				 MediaStore.Audio.keyFor(this.artist).equals(MediaStore.Audio.keyFor(otherartist)) &&
+			     MediaStore.Audio.keyFor(this.album).equals(MediaStore.Audio.keyFor(otheralbum));
+		if (ret)
+			Log.i("Song","Result is true");
+		else
+			Log.i("Song","Result is false");
+		return ret;
+	}
+	
+	public void mergeSong(Song another) {
+		//Fill in missing information
+		if (another.isLocal) {
+			isLocal = true;
+			localPath = another.localPath;
+		}
+		else {
+			host = another.host;
+		}
+		if (genre.length() == 0)
+			genre = another.genre;
+		if (track == -1)
+			track = another.track;
+		if (time == 0)
+			time = another.time;
+		if (size == 0)
+			size = another.size;
+		if (format == "")
+			format = another.format;
+	}
+	
 	public String toString() {
 		String ret = artist + (artist.length() > 0 ? " - " : "") + name;
 		return ret;
 	}
 	
 	public String toTrackTitleString() {
-		return track + " " + name;
+		//return track + " " + name;
+		return name;
 	}
 
 	public int compareTo(Object another) {
+		int ret;
 		if (another instanceof Song) {
-			return (this.id - ((Song) another).id);
-		} else if (another instanceof Integer) {
-			return (this.id - (Integer) another);
+			Song s2 = (Song) another;
+			ret =  MediaStore.Audio.keyFor(artist).compareTo(MediaStore.Audio.keyFor(s2.artist));
+			if (ret == 0) {
+				ret = MediaStore.Audio.keyFor(album).compareTo(MediaStore.Audio.keyFor(s2.album));
+			}
+			if (ret == 0) {
+				ret = disc_num - s2.disc_num; 
+			}
+			if (ret == 0) {
+				ret = (track - s2.track);
+			}
 		}
-		return 0; // all the same if can't compare
+		else
+			ret = 0;
+		return ret;
 	}
 	
 }

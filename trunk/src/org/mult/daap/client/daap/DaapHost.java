@@ -13,8 +13,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 
+import org.badger.mr.music.library.Song;
 import org.mult.daap.client.Host;
-import org.mult.daap.client.Song;
+
 import org.mult.daap.client.SongIDComparator;
 import org.mult.daap.client.daap.request.BadResponseCodeException;
 import org.mult.daap.client.daap.request.Base64;

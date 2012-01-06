@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import org.badger.mr.music.R;
 import org.badger.mr.music.download.DownloadSong;
 import org.mult.daap.Contents;
-import org.mult.daap.client.Song;
+
 
 import android.content.Context;
 import android.content.SharedPreferences;

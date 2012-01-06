@@ -24,7 +24,8 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.mult.daap.client.Song;
+
+import org.badger.mr.music.library.Song;
 import org.mult.daap.client.daap.DaapHost;
 import org.mult.daap.client.daap.Hasher;
 
