@@ -10,7 +10,7 @@ import java.util.TreeMap;
 
 import org.mult.daap.Contents;
 import org.mult.daap.MediaPlayback;
-import org.mult.daap.client.Song;
+
 import org.mult.daap.client.SongDiscNumComparator;
 import org.mult.daap.client.SongTrackComparator;
 import org.badger.mr.music.download.DownloadSong;

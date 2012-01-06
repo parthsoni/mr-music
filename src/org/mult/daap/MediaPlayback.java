@@ -21,11 +21,12 @@ import java.io.InputStream;
 import java.util.Formatter;
 import java.util.Locale;
 
-import org.mult.daap.client.Song;
-import org.mult.daap.FileUtils.FileCopier;
 import org.mult.daap.client.widget.DAAPClientAppWidgetOneProvider;
 
+import org.badger.mr.music.DownloadBrowser;
 import org.badger.mr.music.R;
+import org.badger.mr.music.download.DownloadSong;
+import org.badger.mr.music.library.Song;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -494,7 +495,11 @@ public class MediaPlayback extends Activity implements View.OnTouchListener,
 			startActivity(intent);
 			break;
 		case MENU_DOWNLOAD:
-			new Thread(new FileCopier(song,getApplicationContext())).start();
+			Contents.downloadList.add(DownloadSong.toDownloadSong(song));
+        	Intent dlintent = new Intent(MediaPlayback.this,
+        			DownloadBrowser.class);
+        	startActivity(dlintent);
+        	
 			break;
 		}
 		return true;

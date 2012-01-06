@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.badger.mr.music.MrMusic;
+import org.badger.mr.music.library.Song;
 import org.mult.daap.client.Playlist;
-import org.mult.daap.client.Song;
+//import org.mult.daap.client.Song;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -27,6 +28,7 @@ public class LocalPlaylist extends Playlist {
 		
 	}
 	    
+	@SuppressWarnings("finally")
 	@Override
 	public ArrayList<Song> getSongs() {
 		Cursor musiccursor;

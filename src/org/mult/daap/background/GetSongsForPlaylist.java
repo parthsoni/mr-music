@@ -6,12 +6,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Observable;
 
+import org.badger.mr.music.library.Library;
+import org.badger.mr.music.library.Song;
 import org.badger.mr.music.local.LocalPlaylist;
 
-import org.mult.daap.Contents;
+//import org.mult.daap.Contents;
 import org.mult.daap.MediaPlayback;
 import org.mult.daap.PlaylistBrowser;
-import org.mult.daap.client.Song;
+//import org.mult.daap.client.Song;
 import org.mult.daap.client.daap.DaapPlaylist;
 
 import android.content.Context;
@@ -54,7 +56,7 @@ public class GetSongsForPlaylist extends Observable implements Runnable {
             return;
         }
         for (Song song : songs) {
-            if (Contents.ArtistElements.containsKey(song.artist)) {
+          /**  if (Contents.ArtistElements.containsKey(song.artist)) {
                 Contents.ArtistElements.get(song.artist).add(song.id);
             }
             else {
@@ -70,10 +72,10 @@ public class GetSongsForPlaylist extends Observable implements Runnable {
                 t.add(song.id);
                 Contents.AlbumElements.put(song.album, t);
             }
-            Contents.songListAdd(song);
-            
+            Library.addSong(song);**/
+        	Library.addSong(song);
         }
-        Contents.sortLists();
+        Library.sortLists();
         notifyAndSet(FINISHED);
     
     }
@@ -82,7 +84,7 @@ public class GetSongsForPlaylist extends Observable implements Runnable {
     public void run() {
     	
         MediaPlayback.clearState();
-        Contents.clearLists();
+        Library.clearLists();
         ArrayList<Song> rawList = new ArrayList<Song>();
         try {
         	//Build Local Playlist
@@ -95,7 +97,7 @@ public class GetSongsForPlaylist extends Observable implements Runnable {
 	        	//Build Daap Playlist
 	        	Log.i("GSFP","Building Daap Playlist");
 	            if (playList.all_songs == true)
-	            	rawList.addAll(Contents.daapHost.getSongs());
+	            	rawList.addAll(Library.daapHost.getSongs());
 	            	//Collections.copy(rawList, Contents.daapHost.getSongs());
 	            else
 	            	rawList.addAll((ArrayList<Song>) playList.getSongs());
@@ -103,7 +105,7 @@ public class GetSongsForPlaylist extends Observable implements Runnable {
 	            Log.i("GSFP","Playlist size: " + rawList.size());
 	        }
         	else
-    			Contents.address = InetAddress.getLocalHost();
+    			Library.address = InetAddress.getLocalHost();
 
         	
             processContents(rawList);	

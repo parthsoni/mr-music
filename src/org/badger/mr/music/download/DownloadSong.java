@@ -1,6 +1,8 @@
 package org.badger.mr.music.download;
 
-import org.mult.daap.client.Song;
+import org.badger.mr.music.library.Song;
+
+
 
 public class DownloadSong extends Song {
 	public int progress;

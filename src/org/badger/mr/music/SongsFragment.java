@@ -2,9 +2,11 @@ package org.badger.mr.music;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.badger.mr.music.download.DownloadSong;
+import org.badger.mr.music.library.Song;
 import org.mult.daap.ArtistAlbumBrowser;
 import org.mult.daap.MediaPlayback;
 import org.mult.daap.MyIndexerAdapter;
@@ -13,7 +15,8 @@ import org.mult.daap.SongBrowser;
 //import org.mult.daap.ArtistBrowser;
 import org.mult.daap.Contents;
 //import org.mult.daap.MyIndexerAdapter;
-import org.mult.daap.client.Song;
+
+import org.mult.daap.client.SongDiscNumComparator;
 
 
 import android.app.Activity;
@@ -70,27 +73,43 @@ public class SongsFragment extends FragmentActivity {
     
     public static class SongListFragment extends ListFragment
      {
-    	MyIndexerAdapter<String> adapter;
+    	SongListAdapter<Song> adapter;
         private static final int CONTEXT_QUEUE = 0;
         private static final int CONTEXT_SAVE = 1;
         private static final int MENU_ABOUT = 1;
     	private static final int MENU_PREFS = 2;;
         private static final int MENU_SEARCH = 3;
+        public static final int SECTION_TYPE_ALBUM = 2;
+    	public static final int SECTION_TYPE_SONG = 3;
+		public static final int SECTION_TYPE_ARTIST = 1;
     	
     	@Override public void onActivityCreated(Bundle savedInstanceState) {
+    		int sortType;
             super.onActivityCreated(savedInstanceState);
             registerForContextMenu(getListView());
-            // Give some text to display if there is no data.  In a real
-            // application this would come from a resource.
             getListView().setFastScrollEnabled(true);
             setEmptyText("No songs");
-
-            // We have a menu item to show in action bar.
             setHasOptionsMenu(true);
-
-            // Create an empty adapter we will use to display the loaded data.
-            Collections.sort(Contents.stringElements);
-            adapter = new MyIndexerAdapter<String>(MrMusic.context, R.xml.long_list_text_view, Contents.stringElements);
+            
+            
+            if ((Contents.artistFilter.length() + Contents.albumFilter.length()) == 0) {
+            	//If we have no artist filter and no album filter, then sort by artist then album then song
+            	sortType = SECTION_TYPE_ARTIST;
+            	Contents.filteredSongList.clear();
+            	Contents.filteredSongList.addAll(Contents.songList);
+            }
+            else if (Contents.albumFilter.length() == 0) {
+            	//If we have an artist filter and no album filter then sort by album then song
+            	sortType = SECTION_TYPE_ALBUM;
+            }	
+            else {
+            	//If we have no artist filter and an album filter then sort by song
+                //If we have an artist filter and an album filter then sort by song
+                sortType = SECTION_TYPE_SONG;
+            }
+            
+            adapter = new SongListAdapter<Song>(MrMusic.context, R.xml.long_list_text_view, Contents.filteredSongList,sortType);
+            
             Log.i("SongListFragment","Created Song Adapter. Items: " +adapter.getCount());
             setListAdapter(adapter);
              

@@ -7,9 +7,10 @@ import java.util.Observable;
 import java.util.Observer;
 
 import org.mult.daap.background.SearchThread;
-import org.mult.daap.client.Song;
+
 
 import org.badger.mr.music.R;
+import org.badger.mr.music.library.Song;
 
 import android.app.Activity;
 import android.app.ListActivity;
