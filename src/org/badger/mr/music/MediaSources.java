@@ -1,7 +1,5 @@
 package org.badger.mr.music;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -11,7 +9,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import org.mult.daap.AddServerMenu;
-import org.mult.daap.Contents;
+//import org.mult.daap.Contents;
 import org.mult.daap.MediaPlayback;
 import org.mult.daap.PlaylistBrowser;
 import org.mult.daap.Preferences;
@@ -27,6 +25,7 @@ import org.mult.daap.background.SeparatedListAdapter;
 import org.mult.daap.background.WrapMulticastLock;
 
 import org.badger.mr.music.R;
+import org.badger.mr.music.library.Library;
 
 
 import android.app.Activity;
@@ -41,7 +40,6 @@ import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
 import android.database.Cursor;
 import android.net.Uri;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -125,11 +123,11 @@ public class MediaSources extends Activity implements Observer {
 			buttonConfrim
 					.setOnClickListener(new android.view.View.OnClickListener() {
 						public void onClick(View arg0) {
-							Contents.loginManager.interrupt();
-							Contents.loginManager.deleteObservers();
+							Library.loginManager.interrupt();
+							Library.loginManager.deleteObservers();
 							LoginManager lm = new LoginManager(
-									Contents.loginManager.name,
-									Contents.loginManager.address, password
+									Library.loginManager.name,
+									Library.loginManager.address, password
 											.getText().toString(), true);
 							password.setText("");
 							startLogin(lm);
@@ -139,7 +137,7 @@ public class MediaSources extends Activity implements Observer {
 			buttonCancel
 					.setOnClickListener(new android.view.View.OnClickListener() {
 						public void onClick(View v) {
-							Contents.loginManager = null;
+							Library.loginManager = null;
 							password.setText("");
 							dismissDialog(PASSWORD_DIALOG);
 						}
@@ -243,7 +241,7 @@ public class MediaSources extends Activity implements Observer {
 			}
 		});
 		this.setContentView(list);
-		LoginManager lm = Contents.loginManager;
+		LoginManager lm = Library.loginManager;
 		if (lm != null) {
 			lm.addObserver(this);
 			// Since lm is not null, we have to create a new pd
@@ -289,8 +287,8 @@ public class MediaSources extends Activity implements Observer {
 		if (pd != null) {
 			pd.dismiss();
 		}
-		if (Contents.loginManager != null) {
-			Contents.loginManager.deleteObserver(this);
+		if (Library.loginManager != null) {
+			Library.loginManager.deleteObserver(this);
 		}
 	}
 
@@ -359,7 +357,7 @@ public class MediaSources extends Activity implements Observer {
 				else if (position == count +2 ) {
 					//Local Music Only
 					//Contents.address = InetAddress.getLocalHost();
-						Contents.daapHost = null;
+						Library.daapHost = null;
 					buildLocalPlaylist();
 					
 					//Log.i("MediaSources","Finished With Playlist");
@@ -402,10 +400,10 @@ public class MediaSources extends Activity implements Observer {
     private void buildLocalPlaylist() {
     	NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
-        Contents.clearLists();
+        Library.clearLists();
         MediaPlayback.clearState();
         GetSongsForPlaylist gsfp = new GetSongsForPlaylist();
-        Contents.getSongsForPlaylist = gsfp;
+        Library.getSongsForPlaylist = gsfp;
         gsfp.addObserver(this);
         gsfp.activityContext = this.getBaseContext();
         Thread thread = new Thread(gsfp);
@@ -424,7 +422,7 @@ public class MediaSources extends Activity implements Observer {
                     pd.dismiss();
                 }
                 Log.i("MediaSources","Finished Loading Music, going to the Music Browser");
-                Contents.getSongsForPlaylist = null;
+                Library.getSongsForPlaylist = null;
                 final Intent intent = new Intent(MediaSources.this, MainPager.class);
                 startActivity(intent);
             }
@@ -432,7 +430,7 @@ public class MediaSources extends Activity implements Observer {
                 if (pd != null) {
                     pd.dismiss();
                 }
-                Contents.getSongsForPlaylist = null;
+                Library.getSongsForPlaylist = null;
                 Toast tst = Toast.makeText(MediaSources.this,
                         getString(R.string.empty_playlist), Toast.LENGTH_LONG);
                 tst.setGravity(Gravity.CENTER, tst.getXOffset() / 2,
@@ -462,7 +460,7 @@ public class MediaSources extends Activity implements Observer {
 		NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		notificationManager.cancelAll();
 		MediaPlayback.clearState();
-		Contents.loginManager = lm;
+		Library.loginManager = lm;
 		lm.addObserver(this);
 		Thread thread = new Thread(lm);
 		thread.start();
@@ -477,10 +475,10 @@ public class MediaSources extends Activity implements Observer {
 					getString(R.string.connecting_detail), true, true);
 			OnCancelListener onCancelListener = new OnCancelListener() {
 				public void onCancel(DialogInterface dialog) {
-					if (Contents.loginManager != null) {
-						Contents.loginManager.interrupt();
-						Contents.loginManager.deleteObservers();
-						Contents.loginManager = null;
+					if (Library.loginManager != null) {
+						Library.loginManager.interrupt();
+						Library.loginManager.deleteObservers();
+						Library.loginManager = null;
 					}
 				}
 			};
@@ -507,8 +505,8 @@ public class MediaSources extends Activity implements Observer {
 		    
 		else {
 			// ERROR
-			if (Contents.loginManager != null) {
-				Contents.loginManager.deleteObserver(this);
+			if (Library.loginManager != null) {
+				Library.loginManager.deleteObserver(this);
 			    loginHandler.sendEmptyMessage(LoginManager.ERROR.intValue());
 			}
 			return;
@@ -523,12 +521,12 @@ public class MediaSources extends Activity implements Observer {
 				
 					// save the server
 					
-				boolean loginRequired = (Contents.loginManager.password
+				boolean loginRequired = (Library.loginManager.password
 						.length() == 0) ? false : true;
-				saveServer(Contents.loginManager.name,
-						Contents.loginManager.address,
-						Contents.loginManager.password, loginRequired);
-				Contents.loginManager = null;
+				saveServer(Library.loginManager.name,
+						Library.loginManager.address,
+						Library.loginManager.password, loginRequired);
+				Library.loginManager = null;
 				final Intent intent = new Intent(MediaSources.this,
 						PlaylistBrowser.class);
 				startActivityForResult(intent, 1);
@@ -541,14 +539,14 @@ public class MediaSources extends Activity implements Observer {
 			} else {
 				// ERROR
 				pd.dismiss();
-				Contents.loginManager = null;
+				Library.loginManager = null;
 				Toast tst = Toast.makeText(MediaSources.this,
 						getString(R.string.unable_to_connect),
 						Toast.LENGTH_LONG);
 				tst.setGravity(Gravity.CENTER, tst.getXOffset() / 2,
 						tst.getYOffset() / 2);
 				tst.show();
-				Contents.loginManager = null;
+				Library.loginManager = null;
 			}
 		}
 	};

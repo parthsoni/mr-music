@@ -2,51 +2,31 @@ package org.badger.mr.music;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import org.badger.mr.music.download.DownloadSong;
+import org.badger.mr.music.library.Library;
 import org.badger.mr.music.library.Song;
-import org.mult.daap.ArtistAlbumBrowser;
 import org.mult.daap.MediaPlayback;
-import org.mult.daap.MyIndexerAdapter;
 import org.mult.daap.Preferences;
-import org.mult.daap.SongBrowser;
 //import org.mult.daap.ArtistBrowser;
-import org.mult.daap.Contents;
+//import org.mult.daap.Contents;
 //import org.mult.daap.MyIndexerAdapter;
 
-import org.mult.daap.client.SongDiscNumComparator;
-
-
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 //import com.example.android.supportv4.app.LoaderCustomSupport.AppListFragment;
@@ -74,41 +54,25 @@ public class SongsFragment extends FragmentActivity {
     public static class SongListFragment extends ListFragment
      {
     	SongListAdapter<Song> adapter;
+    	ArrayList<Song> songList;
         private static final int CONTEXT_QUEUE = 0;
         private static final int CONTEXT_SAVE = 1;
         private static final int MENU_ABOUT = 1;
     	private static final int MENU_PREFS = 2;;
         private static final int MENU_SEARCH = 3;
-        public static final int SECTION_TYPE_ALBUM = 2;
-    	public static final int SECTION_TYPE_SONG = 3;
-		public static final int SECTION_TYPE_ARTIST = 1;
+
     	
     	@Override public void onActivityCreated(Bundle savedInstanceState) {
-    		int sortType;
-            super.onActivityCreated(savedInstanceState);
+    		 super.onActivityCreated(savedInstanceState);
             registerForContextMenu(getListView());
             getListView().setFastScrollEnabled(true);
             setEmptyText("No songs");
             setHasOptionsMenu(true);
             
-            
-            if ((Contents.artistFilter.length() + Contents.albumFilter.length()) == 0) {
-            	//If we have no artist filter and no album filter, then sort by artist then album then song
-            	sortType = SECTION_TYPE_ARTIST;
-            	Contents.filteredSongList.clear();
-            	Contents.filteredSongList.addAll(Contents.songList);
-            }
-            else if (Contents.albumFilter.length() == 0) {
-            	//If we have an artist filter and no album filter then sort by album then song
-            	sortType = SECTION_TYPE_ALBUM;
-            }	
-            else {
-            	//If we have no artist filter and an album filter then sort by song
-                //If we have an artist filter and an album filter then sort by song
-                sortType = SECTION_TYPE_SONG;
-            }
-            
-            adapter = new SongListAdapter<Song>(MrMusic.context, R.xml.long_list_text_view, Contents.filteredSongList,sortType);
+            songList = Library.songBrowseList;
+   		    //SongComparator snc = new SongComparator();
+            //Collections.sort(songList,snc);
+            adapter = new SongListAdapter<Song>(MrMusic.context, R.xml.long_list_text_view,songList,Library.songSortType);
             
             Log.i("SongListFragment","Created Song Adapter. Items: " +adapter.getCount());
             setListAdapter(adapter);
@@ -139,16 +103,16 @@ public class SongsFragment extends FragmentActivity {
             //    s = Contents.filteredArtistSongList.get(menuInfo.position);
             //}
             //else {
-                s = Contents.songList.get(menuInfo.position);
+                s = songList.get(menuInfo.position);
             //}
             switch (aItem.getItemId()) {
             	case CONTEXT_SAVE:
     	        	//new Thread(new FileCopier(s,getApplicationContext())).start();
-            		Contents.downloadList.add(DownloadSong.toDownloadSong(s));
+            		Library.addToDownloadQueue(s);
                 	Intent dlintent = new Intent(getActivity().getBaseContext(),
                 			DownloadBrowser.class);
                 	startActivity(dlintent);
-    	        	return true;
+                	return true;
             }
             return false;
         }
@@ -197,9 +161,10 @@ public class SongsFragment extends FragmentActivity {
                 Contents.setSongPosition(Contents.filteredArtistSongList,
                         position);
             }
-            else {**/
+            else {
                 Contents.setSongPosition(Contents.songList, position);
-            //}
+            //}**/
+            Library.setPlayQueue(songList, position);
             MediaPlayback.clearState();
             NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.cancelAll();

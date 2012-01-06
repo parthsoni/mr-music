@@ -12,7 +12,7 @@ import org.badger.mr.music.local.LocalPlaylist;
 
 //import org.mult.daap.Contents;
 import org.mult.daap.MediaPlayback;
-import org.mult.daap.PlaylistBrowser;
+//import org.mult.daap.PlaylistBrowser;
 //import org.mult.daap.client.Song;
 import org.mult.daap.client.daap.DaapPlaylist;
 
@@ -37,6 +37,7 @@ public class GetSongsForPlaylist extends Observable implements Runnable {
     public GetSongsForPlaylist()
     {
     	this.playList = null;
+    	this.lastMessage = INITIALIZED;
     }
 
     public int getLastMessage() {
@@ -75,6 +76,8 @@ public class GetSongsForPlaylist extends Observable implements Runnable {
             Library.addSong(song);**/
         	Library.addSong(song);
         }
+        Library.setFilters();
+        Library.artistBrowseList = Library.getArtistList(Library.artists);
         Library.sortLists();
         notifyAndSet(FINISHED);
     

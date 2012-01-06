@@ -3,8 +3,8 @@ package org.mult.daap.background;
 import java.util.ArrayList;
 import java.util.Observable;
 
+import org.badger.mr.music.library.Library;
 import org.badger.mr.music.library.Song;
-import org.mult.daap.Contents;
 
 
 public class SearchThread extends Observable implements Runnable {
@@ -32,13 +32,13 @@ public class SearchThread extends Observable implements Runnable {
 
    public void run() {
       srList = new ArrayList<Song>();
-      for (Song s : Contents.songList) {
-         if (s.name.toUpperCase().contains(searchQuery.toUpperCase())
-               || s.artist.toUpperCase().contains(searchQuery.toUpperCase())
-               || s.album.toUpperCase().contains(searchQuery.toUpperCase())) {
-            srList.add(s);
-         }
-      }
+   //   for (Song s : Library.getSongList(Library.)) {
+    //     if (s.name.toUpperCase().contains(searchQuery.toUpperCase())
+    //           || s.artist.toUpperCase().contains(searchQuery.toUpperCase())
+    //           || s.album.toUpperCase().contains(searchQuery.toUpperCase())) {
+    //        srList.add(s);
+    //     }
+    //  }
       notifyAndSet(srList);
    }
 }

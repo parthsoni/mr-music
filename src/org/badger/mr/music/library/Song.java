@@ -26,7 +26,6 @@ package org.badger.mr.music.library;
 import org.mult.daap.client.Host;
 
 import android.provider.MediaStore;
-import android.util.Log;
 
 
 
@@ -119,6 +118,11 @@ public class Song implements Comparable<Object> {
 	public String toTrackTitleString() {
 		//return track + " " + name;
 		return name;
+	}
+	
+	public String getHashKey() {
+		
+		return MediaStore.Audio.keyFor(name)+MediaStore.Audio.keyFor(album)+MediaStore.Audio.keyFor(artist);
 	}
 
 	public int compareTo(Object another) {

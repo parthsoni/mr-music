@@ -52,7 +52,7 @@ public class MainPager extends FragmentActivity implements Observer {
 			libSource.setText("Local Library (Touch to change)");
 		else
 			libSource.setText("Remote Library (Touch to change)");
-		if (Library.songs.size() == 0)
+		if (Library.artists.size() == 0)
 		{
 			Log.i("TabMain","Playlist is empty. Loading the local list");
 			

@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import org.badger.mr.music.SongsFragment.SongListFragment;
+import org.badger.mr.music.library.Library;
 import org.badger.mr.music.library.Song;
 
 import android.content.Context;
@@ -45,13 +45,13 @@ public class SongListAdapter<T> extends ArrayAdapter<T> implements SectionIndexe
 		for (int i = size - 1; i >= 0; i--) {
 			Song s = mySongs.get(i);
 			switch (sectionType) {
-				case SongListFragment.SECTION_TYPE_ARTIST: 
+				case Library.SECTION_TYPE_ARTIST: 
 					alphaIndexer.put(s.artist.toUpperCase(), i);
 					break;
-				case SongListFragment.SECTION_TYPE_ALBUM:
+				case Library.SECTION_TYPE_ALBUM:
 					alphaIndexer.put(s.album.toUpperCase(), i);
 					break;
-				case SongListFragment.SECTION_TYPE_SONG:
+				case Library.SECTION_TYPE_SONG:
 					//No Indexer
 					break;
 			}
@@ -77,13 +77,13 @@ public class SongListAdapter<T> extends ArrayAdapter<T> implements SectionIndexe
 			tv.setTextColor(Color.LTGRAY);
 		
 		switch (sectionType) {
-			case SongListFragment.SECTION_TYPE_ARTIST: 
+			case Library.SECTION_TYPE_ARTIST: 
 				tv.setText(mySongs.get(position).toTrackTitleString());
 				break;
-			case SongListFragment.SECTION_TYPE_ALBUM:
+			case Library.SECTION_TYPE_ALBUM:
 				tv.setText(mySongs.get(position).toTrackTitleString());
 				break;
-			case SongListFragment.SECTION_TYPE_SONG:
+			case Library.SECTION_TYPE_SONG:
 				tv.setText(mySongs.get(position).toString());
 				break;
 		}
