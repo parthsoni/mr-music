@@ -34,9 +34,9 @@ public class SongListAdapter<T> extends ArrayAdapter<T> implements SectionIndexe
 			List<T> objects, int sType) {
 		super(context, textViewResourceId, objects);
 		Log.i("SongListAdapter","Creating Adapter. Items: " + objects.size());
-		//SharedPreferences mPrefs = PreferenceManager
-		//		.getDefaultSharedPreferences(context);
-		//font_size = Integer.valueOf(mPrefs.getString("font_pref", "18"));
+		SharedPreferences mPrefs = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		font_size = Integer.valueOf(mPrefs.getString("font_pref", "18"));
 		vContext = context;
 		mySongs = (ArrayList<Song>) objects;
 		sectionType = sType;
@@ -69,7 +69,7 @@ public class SongListAdapter<T> extends ArrayAdapter<T> implements SectionIndexe
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		TextView tv = new TextView(vContext.getApplicationContext());
-		//tv.setTextSize(font_size);
+		tv.setTextSize(font_size);
 		//tv.setTextColor(Color.WHITE);
 		if (mySongs.get(position).isLocal)
 			tv.setTextColor(Color.WHITE);

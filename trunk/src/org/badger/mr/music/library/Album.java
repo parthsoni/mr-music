@@ -20,6 +20,7 @@ public class Album implements Comparable<Object> {
 		if (existing == null) {
 			Log.i("Album","Adding " + s.name);
 			songs.add(s);
+			//Library.songs.add(s);
 		}
 		else {
 			Log.i("Album","Merging " + s.name);
@@ -32,7 +33,7 @@ public class Album implements Comparable<Object> {
 	public Song getSong(Song s) {
 		Song ret = null;
 		for (Song song: songs) {
-			if (song.isSame(song)) {
+			if (song.isSame(s)) {
 				ret = song;
 				break;
 			}

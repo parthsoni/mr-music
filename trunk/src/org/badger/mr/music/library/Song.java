@@ -83,14 +83,10 @@ public class Song implements Comparable<Object> {
 	
 	public boolean isSame(String otherartist, String otheralbum, String othertitle) {
 		boolean ret;
-		Log.i("Song","Comparing " + othertitle + " to " + this.name);
+		//Log.i("Song","Comparing " + othertitle + " to " + this.name);
 		ret = MediaStore.Audio.keyFor(this.name).equals(MediaStore.Audio.keyFor(othertitle)) &&
 				 MediaStore.Audio.keyFor(this.artist).equals(MediaStore.Audio.keyFor(otherartist)) &&
 			     MediaStore.Audio.keyFor(this.album).equals(MediaStore.Audio.keyFor(otheralbum));
-		if (ret)
-			Log.i("Song","Result is true");
-		else
-			Log.i("Song","Result is false");
 		return ret;
 	}
 	

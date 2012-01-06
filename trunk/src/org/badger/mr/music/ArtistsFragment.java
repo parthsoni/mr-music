@@ -174,6 +174,7 @@ public class ArtistsFragment extends FragmentActivity {
             //{
 	            Artist artist = Library.artists.get(position);
 	            Library.artistFilter = artist.toString();
+	            Library.albumFilter = "";
 	            Library.setFilters();
             //}
             
