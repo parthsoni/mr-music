@@ -3,11 +3,8 @@ package org.badger.mr.music.local;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
-
-import org.badger.mr.music.R;
 import org.badger.mr.music.download.DownloadSong;
-import org.mult.daap.Contents;
+import org.badger.mr.music.library.Library;
 
 
 import android.content.Context;
@@ -54,7 +51,7 @@ public class FileDownloader extends AsyncTask <Void, Integer, Integer>  {
 		
 		
 		while (i >= 0) {
-			s = Contents.downloadList.get(i);
+			s = Library.downloadList.get(i);
 			//progressbar.setProgress(0);
 			//activedownload.setText(s.toString());
 			activetitle = s.toString();
@@ -74,7 +71,7 @@ public class FileDownloader extends AsyncTask <Void, Integer, Integer>  {
 			    	directory.mkdirs();
 			    	File destination = new File(directory, s.track + "-" + safeName
 			    			+ "." + s.format);
-			    	InputStream songStream = Contents.daapHost
+			    	InputStream songStream = Library.daapHost
 						.getSongStream(s);
 			    	FileOutputStream destinationStream = new FileOutputStream(
 			    			destination);
@@ -127,10 +124,10 @@ public class FileDownloader extends AsyncTask <Void, Integer, Integer>  {
 	@SuppressWarnings("null")
 	private int getNext(){
 		int retVal = -1;
-		for (int i = 0; i < Contents.downloadList.size(); i = i + 1) { // Test and Loop
-			   if (Contents.downloadList.get(i).status == DownloadSong.STATUS_NOTSTARTED) {
+		for (int i = 0; i < Library.downloadList.size(); i = i + 1) { // Test and Loop
+			   if (Library.downloadList.get(i).status == DownloadSong.STATUS_NOTSTARTED) {
 				   retVal = i;
-				   Log.i("DownloadSongs","Next Available Song: " + Contents.downloadList.get(i).name + "Index " + i);
+				   Log.i("DownloadSongs","Next Available Song: " + Library.downloadList.get(i).name + "Index " + i);
 				   break;
 			   }
 			

@@ -2,7 +2,6 @@ package org.badger.mr.music;
 
 import android.app.Application;
 import android.content.Context;
-import android.widget.TabHost;
 
 public class MrMusic extends Application{
 

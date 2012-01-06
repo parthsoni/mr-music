@@ -3,7 +3,8 @@ package org.mult.daap.background;
 import java.net.InetAddress;
 import java.util.Observable;
 
-import org.mult.daap.Contents;
+//import org.mult.daap.Contents;
+import org.badger.mr.music.library.Library;
 import org.mult.daap.client.daap.DaapHost;
 import org.mult.daap.client.daap.request.PasswordFailedException;
 
@@ -57,30 +58,30 @@ public class LoginManager extends Observable implements Runnable {
             else if (urlAddress.length > 2) { // ipv6
                 port = Integer.valueOf(urlAddress[urlAddress.length - 1]);
             }
-            Contents.address = InetAddress.getByName(hostname);
-            if (Contents.daapHost != null) {
+            Library.address = InetAddress.getByName(hostname);
+            if (Library.daapHost != null) {
                 try {
-                    Contents.daapHost.logout();
-                    Contents.playlist_position = -1;
+                	Library.daapHost.logout();
+                //Library.playlist_position = -1;
                 } catch (Exception e) {
                     // Do nothing
                 }
-                Contents.clearLists();
+                Library.clearLists();
             }
             if (interrupted)
                 return;
             if (login_required) {
-                Contents.daapHost = new DaapHost(name, password,
-                        Contents.address, port);
+            	Library.daapHost = new DaapHost(name, password,
+            			Library.address, port);
             }
             else {
-                Contents.daapHost = new DaapHost(name, null, Contents.address,
+            	Library.daapHost = new DaapHost(name, null, Library.address,
                         port);
             }
             if (interrupted)
                 return;
             try {
-                Contents.daapHost.connect();
+            	Library.daapHost.connect();
             } catch (PasswordFailedException e) {
                 notifyAndSet(LoginManager.PASSWORD_FAILED);
                 return;

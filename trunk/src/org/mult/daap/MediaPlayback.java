@@ -24,8 +24,10 @@ import java.util.Locale;
 import org.mult.daap.client.widget.DAAPClientAppWidgetOneProvider;
 
 import org.badger.mr.music.DownloadBrowser;
+import org.badger.mr.music.MainPager;
 import org.badger.mr.music.R;
 import org.badger.mr.music.download.DownloadSong;
+import org.badger.mr.music.library.Library;
 import org.badger.mr.music.library.Song;
 
 import android.app.Activity;
@@ -118,10 +120,10 @@ public class MediaPlayback extends Activity implements View.OnTouchListener,
 	public void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
 		setResult(Activity.RESULT_OK);
-		if (Contents.address == null) {
+		if (Library.address == null) {
 			// We got kicked out of memory probably
 			clearState();
-			Contents.clearLists();
+			Library.clearLists();
 			stopNotification();
 			setResult(Activity.RESULT_CANCELED);
 			finish();
@@ -162,12 +164,12 @@ public class MediaPlayback extends Activity implements View.OnTouchListener,
 		
 		v.setOnTouchListener(this);
 		v.setOnLongClickListener(this);
-		if (Contents.shuffle) {
+		if (Library.shuffle) {
 			mShuffleButton.setImageResource(R.drawable.ic_menu_shuffle_on);
 		} else {
 			mShuffleButton.setImageResource(R.drawable.ic_menu_shuffle);
 		}
-		if (Contents.repeat) {
+		if (Library.repeat) {
 			mRepeatButton.setImageResource(R.drawable.ic_menu_repeat_on);
 		} else {
 			mRepeatButton.setImageResource(R.drawable.ic_menu_repeat);
@@ -183,7 +185,7 @@ public class MediaPlayback extends Activity implements View.OnTouchListener,
 		mProgress.setOnSeekBarChangeListener(mSeekListener);
 		if (mediaPlayer == null) {
 			try {
-				startSong(Contents.getSong());
+				startSong(Library.getPlayerSong());
 			} catch (IndexOutOfBoundsException e) {
 				Log.e(logTag, "Something went wrong with playlist/queue");
 				e.printStackTrace();
@@ -232,7 +234,7 @@ public class MediaPlayback extends Activity implements View.OnTouchListener,
 			if (song.isLocal) 
 				mediaPlayer.setDataSource(song.localPath);
 			else
-				mediaPlayer.setDataSource(Contents.daapHost.getSongURL(song));
+				mediaPlayer.setDataSource(Library.daapHost.getSongURL(song));
 			mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			mediaPlayer.setOnCompletionListener(normalOnCompletionListener);
 			mediaPlayer.setOnErrorListener(mediaPlayerErrorListener);
@@ -328,11 +330,11 @@ public class MediaPlayback extends Activity implements View.OnTouchListener,
 	private View.OnClickListener mShuffleListener = new View.OnClickListener() {
 
 		public void onClick(View v) {
-			if (Contents.shuffle) {
-				Contents.shuffle = false;
+			if (Library.shuffle) {
+				Library.shuffle = false;
 				mShuffleButton.setImageResource(R.drawable.ic_menu_shuffle);
 			} else {
-				Contents.shuffle = true;
+				Library.shuffle = true;
 				mShuffleButton.setImageResource(R.drawable.ic_menu_shuffle_on);
 			}
 		}
@@ -341,11 +343,11 @@ public class MediaPlayback extends Activity implements View.OnTouchListener,
 	private View.OnClickListener mRepeatListener = new View.OnClickListener() {
 
 		public void onClick(View v) {
-			if (Contents.repeat) {
-				Contents.repeat = false;
+			if (Library.repeat) {
+				Library.repeat = false;
 				mRepeatButton.setImageResource(R.drawable.ic_menu_repeat);
 			} else {
-				Contents.repeat = true;
+				Library.repeat = true;
 				mRepeatButton.setImageResource(R.drawable.ic_menu_repeat_on);
 			}
 		}
@@ -378,7 +380,7 @@ public class MediaPlayback extends Activity implements View.OnTouchListener,
 	private View.OnClickListener mPrevListener = new View.OnClickListener() {
 		public void onClick(View v) {
 			try {
-				startSong(Contents.getPreviousSong());
+				startSong(Library.getPreviousSong());
 				mAppWidgetProvider.notifyChange(mMediaPlaybackService,
 						MediaPlayback.this,
 						MediaPlaybackService.PLAYSTATE_CHANGED);
@@ -491,15 +493,16 @@ public class MediaPlayback extends Activity implements View.OnTouchListener,
 			break;
 		case MENU_LIBRARY:
 			Intent intent = new Intent(MediaPlayback.this,
-					PlaylistBrowser.class);
+					MainPager.class);
 			startActivity(intent);
 			break;
 		case MENU_DOWNLOAD:
-			Contents.downloadList.add(DownloadSong.toDownloadSong(song));
+			
+			Library.addToDownloadQueue(song);
         	Intent dlintent = new Intent(MediaPlayback.this,
         			DownloadBrowser.class);
         	startActivity(dlintent);
-        	
+	    	
 			break;
 		}
 		return true;
@@ -765,14 +768,14 @@ public class MediaPlayback extends Activity implements View.OnTouchListener,
 				if (scrobbler_support) {
 					scrobble(3); // COMPLETE
 				}
-				if (Contents.shuffle == true) {
-					startSong(Contents.getRandomSong());
-				} else if (Contents.repeat == true) {
+				if (Library.shuffle == true) {
+					startSong(Library.getRandomSong());
+				} else if (Library.repeat == true) {
 					mp.seekTo(0);
 					mp.start();
 					queueNextRefresh(refreshNow());
 				} else {
-					startSong(Contents.getNextSong());
+					startSong(Library.getNextSong());
 				}
 			} catch (IndexOutOfBoundsException e) {
 				handler.removeMessages(REFRESH);
@@ -835,7 +838,7 @@ public class MediaPlayback extends Activity implements View.OnTouchListener,
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
 			if (MediaPlaybackService.PREVIOUS.equals(action)) {
-				startSong(Contents.getPreviousSong());
+				startSong(Library.getPreviousSong());
 				mAppWidgetProvider.notifyChange(mMediaPlaybackService,
 						MediaPlayback.this,
 						MediaPlaybackService.PLAYSTATE_CHANGED);

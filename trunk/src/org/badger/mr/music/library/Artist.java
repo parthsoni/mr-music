@@ -2,18 +2,18 @@ package org.badger.mr.music.library;
 
 
 
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 import android.provider.MediaStore;
 import android.util.Log;
 
 public class Artist implements Comparable<Object>{
 	public String name;
-	public ArrayList<Album> albums;
+	public LinkedHashMap<String,Album> albums;
 
 	public Artist(String n) {
 		name = n;
-		albums = new ArrayList<Album>();
+		albums = new LinkedHashMap<String,Album>();
 		Library.addArtist(this);
 		Log.i("Artist","Creating Artist "+ name);
 	}
@@ -34,32 +34,28 @@ public class Artist implements Comparable<Object>{
 		return getKey().equals(MediaStore.Audio.keyFor(othername));
 	}
 	
-	public ArrayList<Song> getSongs() {
-		ArrayList<Song> songs = new ArrayList<Song>();
-		for (Album a: albums) {
-			songs.addAll(a.getSongs(this));
+	public LinkedHashMap<String,Song> getSongs() {
+		
+		LinkedHashMap<String,Song> songlist = new LinkedHashMap<String,Song>();
+		for (String albumkey  : albums.keySet()) {
+			songlist.putAll(albums.get(albumkey).getSongs());
 		}
-		return songs;
+		
+		return songlist;
 	}
 	
 	
-	public ArrayList<Album> getAlbums() {
+	public LinkedHashMap<String,Album> getAlbums() {
 		return albums;
 	}
 	
 	public void addAlbum(Album a) {
-		albums.add(a);
+		albums.put(a.getKey(),a);
 	}
 	
 	public Album getAlbum(String title) {
-		Album ret = null;
-		for (Album a : albums) {
-			if (a.isSame(title)) {
-				ret = a;
-				break;
-			}
-		}
-		return ret;
+		
+		return albums.get(MediaStore.Audio.keyFor(title));
 	}
 	
 	public String toString(){

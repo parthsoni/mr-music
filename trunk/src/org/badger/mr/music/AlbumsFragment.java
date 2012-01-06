@@ -1,14 +1,11 @@
 package org.badger.mr.music;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import org.badger.mr.music.download.DownloadSong;
 import org.badger.mr.music.library.Album;
-import org.badger.mr.music.library.Artist;
 import org.badger.mr.music.library.Library;
-import org.badger.mr.music.library.Song;
 //import org.mult.daap.Contents;
 import org.mult.daap.MediaPlayback;
-import org.mult.daap.MyIndexerAdapter;
 import org.mult.daap.Preferences;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
@@ -56,7 +53,8 @@ public class AlbumsFragment extends FragmentActivity {
      {
     	AlbumListAdapter<Album> adapter;
     	//private ListView albumList;
-    	private String artistName;
+    	ArrayList<Album> albumList;
+    	//private String artistName;
         private static final int MENU_ABOUT = 1;
     	private static final int MENU_PREFS = 2;
         private static final int MENU_SEARCH = 3;
@@ -85,8 +83,10 @@ public class AlbumsFragment extends FragmentActivity {
    		 	}
    		 	
    		 	;**/
-   		 	
-   		    adapter = new AlbumListAdapter<Album>(MrMusic.context, R.xml.long_list_text_view, Library.filteredAlbums);
+   		    albumList = Library.albumBrowseList;
+   		    //AlbumComparator albc = new AlbumComparator();
+            //Collections.sort(albumList,albc);
+   		    adapter = new AlbumListAdapter<Album>(MrMusic.context, R.xml.long_list_text_view, albumList);
    		 	//adapter.insert("All Albums for " + artistName, 0);
    		 	Log.i("AlbumListFragment","Created Filtered Album List. Size: " + adapter.getCount());
             
@@ -122,22 +122,23 @@ public class AlbumsFragment extends FragmentActivity {
         public boolean onContextItemSelected(MenuItem aItem) {
             AdapterContextMenuInfo menuInfo = (AdapterContextMenuInfo) aItem
                     .getMenuInfo();
-            Album album = Library.filteredAlbums.get(menuInfo.position);
-            Library.albumFilter = album.toString();
-            Library.setFilters();
+            Album album = albumList.get(menuInfo.position); 
+            //Library.albumFilter = album.toString();
+            //Library.setFilters();
             
             switch (aItem.getItemId()) {
                 case CONTEXT_PLAY_ALBUM:
                     Intent intent = new Intent(getActivity().getBaseContext(),
                             MediaPlayback.class);
-                    Library.setPlayQueue();
+                    Library.setPlayQueue(Library.getSongsList(album.getSongs()));
+                    //Library.setPlayQueue();
                     MediaPlayback.clearState();
                     NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
                     notificationManager.cancelAll();
                     startActivityForResult(intent, 1);
                     return true;
                 case CONTEXT_SAVE_ALBUM:
-                	Library.addToDownloadQueue(Library.filteredSongs);
+                	Library.addToDownloadQueue(Library.getSongsList(album.getSongs()));
                 	Intent dlintent = new Intent(getActivity().getBaseContext(),
                 			DownloadBrowser.class);
                 	startActivity(dlintent);
@@ -193,7 +194,7 @@ public class AlbumsFragment extends FragmentActivity {
             }
             Contents.buildSelectedSongList(position);
 	        **/
-            Album album = Library.filteredAlbums.get(position);
+            Album album = albumList.get(position);
             Library.albumFilter = album.toString();
             Library.setFilters();
             

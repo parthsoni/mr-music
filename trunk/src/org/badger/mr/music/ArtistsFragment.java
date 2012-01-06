@@ -1,5 +1,6 @@
 package org.badger.mr.music;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import org.badger.mr.music.library.Library;
 import org.badger.mr.music.library.Artist;
@@ -53,6 +54,7 @@ public class ArtistsFragment extends FragmentActivity {
     public static class ArtistListFragment extends ListFragment
      {
     	ArtistListAdapter<Artist> adapter;
+    	ArrayList<Artist> artistList;
     	private static final int MENU_SEARCH = 3;
         private static final int CONTEXT_PLAY_ARTIST = 4;
         private static final int CONTEXT_SAVE_ARTIST = 5;
@@ -75,10 +77,12 @@ public class ArtistsFragment extends FragmentActivity {
             //	Contents.artistNameList.remove(0);
             
             // Create an empty adapter we will use to display the loaded data.
-            Log.i("AristListFragment","Creating Artist List " + Library.artists.size() );
-            adapter = new ArtistListAdapter<Artist>(MrMusic.context, R.xml.long_list_text_view, Library.artists);
-            //if (!Contents.artistNameList.contains("All Artists"))
-            //	adapter.insert("All Artists", 0);
+            artistList = Library.artistBrowseList;
+            //ArtistComparator artc = new ArtistComparator();
+            //Collections.sort(artistList,artc);
+            Log.i("AristListFragment","Creating Artist List " + artistList.size() );
+            adapter = new ArtistListAdapter<Artist>(MrMusic.context, R.xml.long_list_text_view, artistList);
+            //adapter.insert("All Artists", 0);
             Log.i("ArtistListFragment","Created Artist Adapter. Items: " +adapter.getCount());
             setListAdapter(adapter);
              
@@ -105,15 +109,14 @@ public class ArtistsFragment extends FragmentActivity {
             AdapterContextMenuInfo menuInfo = (AdapterContextMenuInfo) aItem
                     .getMenuInfo();
             
-            Artist artist = Library.artists.get(menuInfo.position);
-            Library.artistFilter = artist.toString();
-            Library.setFilters();
+            Artist artist = artistList.get(menuInfo.position);
+            //Library.artistFilter = artist.toString();
+            //Library.setFilters();
             switch (aItem.getItemId()) {
                 case CONTEXT_PLAY_ARTIST:
                     Intent intent = new Intent(getActivity().getBaseContext(),
                             MediaPlayback.class);
-                    
-                    Library.setPlayQueue();
+                    Library.setPlayQueue(Library.getSongsList(artist.getSongs()));
                     MediaPlayback.clearState();
                     NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
                     notificationManager.cancelAll();
@@ -121,7 +124,7 @@ public class ArtistsFragment extends FragmentActivity {
                     return true;
                 case CONTEXT_SAVE_ARTIST:
                 	//new Thread(new FileCopier(Contents.filteredArtistSongList,getApplicationContext())).start();
-                	Library.addToDownloadQueue(Library.filteredSongs);
+                	Library.addToDownloadQueue(Library.getSongsList(artist.getSongs()));
                 	Intent dlintent = new Intent(getActivity().getBaseContext(),
                 			DownloadBrowser.class);
                 	startActivity(dlintent);
@@ -172,10 +175,10 @@ public class ArtistsFragment extends FragmentActivity {
             //}
             //else
             //{
-	            Artist artist = Library.artists.get(position);
-	            Library.artistFilter = artist.toString();
-	            Library.albumFilter = "";
-	            Library.setFilters();
+	        Artist artist = artistList.get(position);
+	        Library.artistFilter = artist.toString();
+	        Library.albumFilter = "";
+	        Library.setFilters();
             //}
             
             final Intent intent = new Intent(getActivity(), MainPager.class);
