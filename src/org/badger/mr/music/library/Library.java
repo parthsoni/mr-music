@@ -37,41 +37,51 @@ public class Library {
 	public static void setFilters() {
 		filteredSongs.clear();
 		filteredAlbums.clear();
+		Log.i("Library","Setting Filters");
 		if (artistFilter.length() + albumFilter.length() == 0) {
+			Log.i("Library","   Unfiltered ");
 			filteredAlbums.addAll(albums);
-			filteredSongs.addAll(songs);
+			filteredSongs.addAll(getAllSongs());
 		}
-		else if (albumFilter.length() == 0) {
+		else if (artistFilter.length() > 0) {
 			Artist filterArtist = getArtist(artistFilter);
-			if (filterArtist != null) {
+			Log.i("Library","   Artist Filter: " + filterArtist);
+			//if (filterArtist != null) {
 				filteredSongs.addAll(filterArtist.getSongs());
 				filteredAlbums.addAll(filterArtist.getAlbums());
+				Log.i("Library","   Albums: " + filteredAlbums.size());
+				Log.i("Library","   Songs: " + filteredSongs.size());
 				AlbumComparator albc = new AlbumComparator();
 		        Collections.sort(filteredAlbums,albc);
 			    SongComparator snc = new SongComparator();
 		        Collections.sort(filteredSongs,snc);
-			}
+			//}
 		}
-		else if (artistFilter.length() == 0) {
+		else if (albumFilter.length() > 0) {
 			Album filterAlbum = getAlbum(albumFilter);
-			if (filterAlbum != null) {
-				filteredAlbums.add(filterAlbum);
+			Log.i("Library","   Album filter: " + filterAlbum);
+			//if (filterAlbum != null) {
+				filteredAlbums.addAll(albums);
 				filteredSongs.addAll(filterAlbum.getSongs());
-			    SongComparator snc = new SongComparator();
+				Log.i("Library","   Songs: " + filteredSongs.size());
+				SongComparator snc = new SongComparator();
 		        Collections.sort(filteredSongs,snc);
-			}
+			//}
 		}
 		else {
 			Album filterAlbum = getAlbum(albumFilter);
 			Artist filterArtist = getArtist(artistFilter);
-			if (filterAlbum != null) {
+			Log.i("Library","   Filter Artist " + filterArtist + " Filter album: " + filterAlbum );
+			
+			//if (filterAlbum != null) {
 				filteredAlbums.add(filterAlbum);
-				if (filterArtist != null) {
+			//	if (filterArtist != null) {
 					filteredSongs.addAll(filterAlbum.getSongs(filterArtist));
-				    SongComparator snc = new SongComparator();
+					Log.i("Library","   Songs: " + filteredSongs.size());
+					SongComparator snc = new SongComparator();
 			        Collections.sort(filteredSongs,snc);
-				}
-			}
+			//	}
+			//}
 		}
 	}
 	
@@ -82,8 +92,7 @@ public class Library {
         
         AlbumComparator albc = new AlbumComparator();
         Collections.sort(albums,albc);
-		
-        
+	
         SongComparator snc = new SongComparator();
         Collections.sort(songs,snc);
     }
@@ -115,8 +124,16 @@ public class Library {
 				artist = new Artist(s.artist);
 			}
 			artist.addSong(s);
-			songs.add(s);
+			//songs.add(s);
 		}
+	}
+	
+	public static ArrayList<Song> getAllSongs() {
+		ArrayList<Song> slist = new ArrayList<Song>();
+		for (Album a : albums) {
+			slist.addAll(a.getSongs());
+		}
+		return slist;
 	}
 	
 	public static void addArtist(Artist a)
@@ -158,7 +175,15 @@ public class Library {
 	
 	public static Song getSong(Song s) {
 		Song ret = null;
-		for (Song song: songs) {
+		Artist findartist = getArtist(s.artist);
+		if (findartist == null) {
+			return ret;
+		}
+		Album findalbum = getAlbum(s.album);
+		if (findalbum == null) {
+			return ret;
+		}
+		for (Song song: findalbum.getSongs(findartist)) {
 			if (song.isSame(s)) {
 				ret = song;
 				break;

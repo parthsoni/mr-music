@@ -6,8 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.badger.mr.music.library.Artist;
+import org.badger.mr.music.library.Library;
+
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,9 +33,9 @@ public class ArtistListAdapter<T> extends ArrayAdapter<T> implements SectionInde
 			List<T> objects) {
 		super(context, textViewResourceId, objects);
 		Log.i("ArtistListAdapter","Creating Adapter. Items: " + objects.size());
-		//SharedPreferences mPrefs = PreferenceManager
-		//		.getDefaultSharedPreferences(context);
-		//font_size = Integer.valueOf(mPrefs.getString("font_pref", "18"));
+		SharedPreferences mPrefs = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		font_size = Integer.valueOf(mPrefs.getString("font_pref", "18"));
 		vContext = context;
 		myArtists = (ArrayList<Artist>) objects;
 		alphaIndexer = new HashMap<String, Integer>();
@@ -57,9 +61,14 @@ public class ArtistListAdapter<T> extends ArrayAdapter<T> implements SectionInde
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		TextView tv = new TextView(vContext.getApplicationContext());
-		//tv.setTextSize(font_size);
-		//tv.setTextColor(Color.WHITE);
-		tv.setTextColor(Color.WHITE);
+		tv.setTextSize(font_size);
+		if (myArtists.get(position).isSame(Library.artistFilter)) {
+			tv.setBackgroundColor(Color.LTGRAY);
+			tv.setTextColor(Color.BLACK);
+			tv.setSelected(true);
+		}
+		else
+			tv.setTextColor(Color.WHITE);
 		tv.setText(myArtists.get(position).toString());
 		return tv;
 	}
