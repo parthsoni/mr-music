@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -28,11 +29,12 @@ public class SongListAdapter<T> extends ArrayAdapter<T> implements SectionIndexe
 	Context vContext;
 	int font_size;
 	private int sectionType;
+	private static int tvResourceID = R.xml.song_row_view;
 	
 	@SuppressWarnings("unchecked")
-	public SongListAdapter(Context context, int textViewResourceId,
+	public SongListAdapter(Context context, 
 			List<T> objects, int sType) {
-		super(context, textViewResourceId, objects);
+		super(context,  tvResourceID, objects);
 		Log.i("SongListAdapter","Creating Adapter. Items: " + objects.size());
 		SharedPreferences mPrefs = PreferenceManager
 				.getDefaultSharedPreferences(context);
@@ -68,7 +70,7 @@ public class SongListAdapter<T> extends ArrayAdapter<T> implements SectionIndexe
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		TextView tv = new TextView(vContext.getApplicationContext());
+		/**TextView tv = new TextView(vContext.getApplicationContext());
 		tv.setTextSize(font_size);
 		//tv.setTextColor(Color.WHITE);
 		if (mySongs.get(position).isLocal)
@@ -87,7 +89,23 @@ public class SongListAdapter<T> extends ArrayAdapter<T> implements SectionIndexe
 				tv.setText(mySongs.get(position).toString());
 				break;
 		}
-		return tv;
+		return tv;**/
+		 View v = convertView;
+         if (v == null) {
+             LayoutInflater vi = (LayoutInflater) MrMusic.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+             v = vi.inflate( tvResourceID, null);
+         }
+         Song s = mySongs.get(position);
+         if (s != null) {
+                 TextView  = (TextView) v.findViewById(R.id.toptext);
+                 TextView bt = (TextView) v.findViewById(R.id.bottomtext);
+                 if (tt != null) {
+                       tt.setText("Name: "+o.getOrderName());                            }
+                 if(bt != null){
+                       bt.setText("Status: "+ o.getOrderStatus());
+                 }
+         }
+         return v;
 	}
 
 	public int getPositionForSection(int section) {

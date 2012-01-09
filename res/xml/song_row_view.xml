@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:id="@+id/songLayout"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content" >
+		<ImageView
+		  android:id="@+id/songSourceLocalImg"
+	      android:layout_width="wrap_content"
+	      android:layout_height="wrap_content"
+	      android:src="@android:drawable/stat_notify_sdcard"
+	      android:layout_toLeftOf="@+id/songTextLayout"/>
+		<ImageView
+		  android:id="@+id/songSourceRemoteImg"
+	      android:layout_width="wrap_content"
+	      android:layout_height="wrap_content"
+	      android:src="@android:drawable/stat_sys_wifi_signal_4"
+	      android:layout_below="@+id/songSourceLocalImg"
+	      android:layout_toLeftOf="@+id/songTextLayout"/>
+		<RelativeLayout
+		    android:id="@+id/songTextLayout"
+		    android:layout_width="match_parent"
+	    	android:layout_height="wrap_content">
+	    	<TextView 
+	    	    android:id="@+id/songTitle"
+	    	    android:layout_width="wrap_content"
+	    	    android:layout_height="wrap_content"/>
+	    	<TextView
+	    	    android:id="@+id/songAlbumArtist"
+	    	    android:layout_below="@+id/songTitle"
+	    	    android:layout_width="wrap_content"
+	    	    android:layout_height="wrap_content" />
+	    	<TextView 
+	    	    android:id="@+id/songLength"
+	    	    android:layout_alignParentRight="true"
+	    	    android:layout_width="wrap_content"
+	    	    android:layout_height="wrap_content" />	    	    	    	    
+		</RelativeLayout>
+	</RelativeLayout>
+	

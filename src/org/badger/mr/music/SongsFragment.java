@@ -72,7 +72,7 @@ public class SongsFragment extends FragmentActivity {
             songList = Library.songBrowseList;
    		    //SongComparator snc = new SongComparator();
             //Collections.sort(songList,snc);
-            adapter = new SongListAdapter<Song>(MrMusic.context, R.xml.long_list_text_view,songList,Library.songSortType);
+            adapter = new SongListAdapter<Song>(MrMusic.context, songList,Library.songSortType);
             
             Log.i("SongListFragment","Created Song Adapter. Items: " +adapter.getCount());
             setListAdapter(adapter);
