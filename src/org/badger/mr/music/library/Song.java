@@ -79,6 +79,19 @@ public class Song implements Comparable<Object> {
 				
 		    		
 	}
+	public String getTime() {
+		long secs = time / 10000;  
+		String seconds = Integer.toString((int)(time % 60));  
+		String minutes = Integer.toString((int)((time % 3600) / 60));  
+		String hours = Integer.toString((int)(time / 3600));  
+		for (int i = 0; i < 2; i++) {  
+		if (seconds.length() < 2) {  
+		seconds = "0" + seconds;  
+		}  
+		} 
+		return minutes + ":" + seconds;
+	}
+	
 	
 	public boolean isSame(String otherartist, String otheralbum, String othertitle) {
 		boolean ret;

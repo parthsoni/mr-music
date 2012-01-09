@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
@@ -97,13 +98,25 @@ public class SongListAdapter<T> extends ArrayAdapter<T> implements SectionIndexe
          }
          Song s = mySongs.get(position);
          if (s != null) {
-                 TextView  = (TextView) v.findViewById(R.id.toptext);
-                 TextView bt = (TextView) v.findViewById(R.id.bottomtext);
-                 if (tt != null) {
-                       tt.setText("Name: "+o.getOrderName());                            }
-                 if(bt != null){
-                       bt.setText("Status: "+ o.getOrderStatus());
-                 }
+                 ImageView ivLocal  = (ImageView) v.findViewById(R.id.songSourceLocalImg);
+                 ImageView ivRemote =  (ImageView) v.findViewById(R.id.songSourceRemoteImg);
+                 TextView tvTitle = (TextView) v.findViewById(R.id.songTitle);
+                 TextView tvAlbumArtist = (TextView) v.findViewById(R.id.songAlbumArtist);
+                 //TextView tvLength = (TextView) v.findViewById(R.id.songLength);
+                 if (s.isLocal)
+                	 ivLocal.setVisibility(View.VISIBLE);
+                 else
+                	 ivLocal.setVisibility(View.GONE);
+                 
+                 if (s.host == null)
+                	 ivRemote.setVisibility(View.GONE);
+                 else
+                	 ivRemote.setVisibility(View.VISIBLE);
+                 
+                 tvTitle.setText(s.toTrackTitleString());
+                 tvTitle.setTextSize(font_size);
+                 tvAlbumArtist.setText(s.artist + " - " + s.album);
+                // tvLength.setText(s.getTime());
          }
          return v;
 	}
