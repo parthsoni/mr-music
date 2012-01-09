@@ -45,6 +45,7 @@ public class Song implements Comparable<Object> {
 	public Host host;
 	public String genre;
 	public boolean isLocal;
+	public boolean isDaap;
 	public String localPath;
 	
 	// public int status;
@@ -69,6 +70,7 @@ public class Song implements Comparable<Object> {
 		// compilation = false;
 		host = null;
 		isLocal = false;
+		isDaap = false;
 		localPath = "";
 		// status = Song.STATUS_OK;
 
@@ -108,7 +110,8 @@ public class Song implements Comparable<Object> {
 			isLocal = true;
 			localPath = another.localPath;
 		}
-		else {
+		if (another.isDaap) {
+			isDaap = another.isDaap;
 			host = another.host;
 		}
 		if (genre.length() == 0)

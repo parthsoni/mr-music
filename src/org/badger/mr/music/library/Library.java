@@ -34,6 +34,9 @@ public class Library {
 	public static String artistFilter = "";
 	public static String albumFilter = "";
 	public static int playposition;
+	public static int HAS_SOME = 0;
+	public static int HAS_NONE = 1;
+	public static int HAS_ALL = 2;
 	
 	
 	public static InetAddress address;
@@ -108,13 +111,14 @@ public class Library {
 			//	}
 			//}
 		}
+		Log.i("Library","Sorting Lists");
 		albumBrowseList = getAlbumList(Library.filteredAlbums);
 		AlbumComparator albc = new AlbumComparator();
         Collections.sort(albumBrowseList,albc);
         songBrowseList = Library.getSongsList(Library.filteredSongs);
 		SongComparator snc = new SongComparator();
         Collections.sort(songBrowseList,snc);
-        
+        Log.i("Library","Finished Sorting");
 	}
 	
 	public static void sortLists() {

@@ -81,7 +81,7 @@ public class ArtistsFragment extends FragmentActivity {
             //ArtistComparator artc = new ArtistComparator();
             //Collections.sort(artistList,artc);
             Log.i("AristListFragment","Creating Artist List " + artistList.size() );
-            adapter = new ArtistListAdapter<Artist>(MrMusic.context, R.xml.long_list_text_view, artistList);
+            adapter = new ArtistListAdapter<Artist>(MrMusic.context,  artistList);
             //adapter.insert("All Artists", 0);
             Log.i("ArtistListFragment","Created Artist Adapter. Items: " +adapter.getCount());
             setListAdapter(adapter);

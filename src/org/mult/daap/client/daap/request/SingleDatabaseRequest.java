@@ -151,8 +151,10 @@ public class SingleDatabaseRequest extends Request {
 				// } else if (name.equals("asbr")) {
 				// s.bitrate = readInt(data, position, 2);
 			}
+			
 			position += size;
 		}
+		s.isDaap = true;
 		mSongList.add(s);
 	}
 

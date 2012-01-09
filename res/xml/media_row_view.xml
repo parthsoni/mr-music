@@ -4,29 +4,30 @@
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content" >
 		<TextView 
-	    	    android:id="@+id/songTitle"
+	    	    android:id="@+id/TitleRow"
 	    	    android:layout_width="wrap_content"
 	    	    android:layout_height="wrap_content"
 	    	    android:textStyle="bold"/>
 	    	<TextView
-	    	    android:id="@+id/songAlbumArtist"
-	    	    android:layout_below="@+id/songTitle"
+	    	    android:id="@+id/SecondRow"
+	    	    android:layout_below="@id/TitleRow"
 	    	    android:layout_width="wrap_content"
 	    	    android:layout_height="wrap_content"
 	    	     />
 	    	<ImageView
-		  android:id="@+id/songSourceLocalImg"
+		  android:id="@+id/SourceLocalImg"
 	      android:layout_width="wrap_content"
 	      android:layout_height="wrap_content"
 	      android:layout_alignParentRight="true"
 	      android:src="@android:drawable/stat_notify_sdcard"
-	      android:layout_toRightOf="@+id/songTitle"/>
+	      />
 		<ImageView
-		  android:id="@+id/songSourceRemoteImg"
+		  android:id="@+id/SourceRemoteImg"
 	      android:layout_width="wrap_content"
 	      android:layout_height="wrap_content"
-	      android:src="@android:drawable/stat_notify_sdcard"
-	      android:layout_toLeftOf="@+id/songSourceLocalImg"
+	      android:src="@drawable/icon_wifi"
+	      android:layout_toLeftOf="@id/SourceLocalImg"
+          android:layout_alignTop="@id/SourceLocalImg"
 	      />	    	    	    	    
 		</RelativeLayout>
 	

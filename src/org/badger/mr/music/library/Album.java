@@ -1,5 +1,6 @@
 package org.badger.mr.music.library;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import android.provider.MediaStore;
@@ -8,12 +9,18 @@ import android.util.Log;
 public class Album implements Comparable<Object> {
 	public String name;
 	public LinkedHashMap<String,Song> songs;
+	public ArrayList<String> artistList;
+	public int HasLocal;
+	public int HasDaap;
 	
 	public Album(String n) {
 		name = n;
 		songs = new LinkedHashMap<String,Song>();
 		Library.addAlbum(this);
+		artistList = new ArrayList<String>();
 		Log.i("Album","Created Album " + name);
+		HasLocal = Library.HAS_NONE;
+		HasDaap = Library.HAS_NONE;
 	}
 	
 	public void addSong(Song s) {
@@ -27,6 +34,12 @@ public class Album implements Comparable<Object> {
 			Log.i("Album","Merging " + s.name);
 			existing.mergeSong(s);
 		}
+		if (!artistList.contains(s.artist))
+			artistList.add(s.artist);
+		if (s.isDaap)
+			HasDaap = Library.HAS_SOME;
+		if (s.isLocal)
+			HasLocal = Library.HAS_SOME;
 			
 			
 	}
@@ -60,7 +73,29 @@ public class Album implements Comparable<Object> {
 	}
 	
 	public String getKey() {
-		return MediaStore.Audio.keyFor(this.name);
+		String key = MediaStore.Audio.keyFor(this.name);
+		if (key.length() == 0)
+			key = toString().toLowerCase();
+		return key;
+		
+	}
+	
+	public String getSortSection(){
+		String section = name;
+		section.replaceFirst("^((the\\s+)|(a\\s+)|(an\\s+))", "");
+		return section.substring(0, 1).toUpperCase();
+	}
+	
+	public String getArtists() {
+		String artists = "";
+		for (String a: artistList) {
+			if (a.length() > 1) {
+				artists = artists + ", " + a;
+			}
+			else
+				artists = a;
+		}
+		return artists;
 	}
 	
 	public int compareTo(Object another) {

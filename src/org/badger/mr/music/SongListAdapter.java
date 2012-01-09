@@ -30,7 +30,7 @@ public class SongListAdapter<T> extends ArrayAdapter<T> implements SectionIndexe
 	Context vContext;
 	int font_size;
 	private int sectionType;
-	private static int tvResourceID = R.xml.song_row_view;
+	private static int tvResourceID = R.xml.media_row_view;
 	
 	@SuppressWarnings("unchecked")
 	public SongListAdapter(Context context, 
@@ -98,20 +98,20 @@ public class SongListAdapter<T> extends ArrayAdapter<T> implements SectionIndexe
          }
          Song s = mySongs.get(position);
          if (s != null) {
-                 ImageView ivLocal  = (ImageView) v.findViewById(R.id.songSourceLocalImg);
-                 ImageView ivRemote =  (ImageView) v.findViewById(R.id.songSourceRemoteImg);
-                 TextView tvTitle = (TextView) v.findViewById(R.id.songTitle);
-                 TextView tvAlbumArtist = (TextView) v.findViewById(R.id.songAlbumArtist);
+                 ImageView ivLocal  = (ImageView) v.findViewById(R.id.SourceLocalImg);
+                 ImageView ivRemote =  (ImageView) v.findViewById(R.id.SourceRemoteImg);
+                 TextView tvTitle = (TextView) v.findViewById(R.id.TitleRow);
+                 TextView tvAlbumArtist = (TextView) v.findViewById(R.id.SecondRow);
                  //TextView tvLength = (TextView) v.findViewById(R.id.songLength);
                  if (s.isLocal)
                 	 ivLocal.setVisibility(View.VISIBLE);
                  else
-                	 ivLocal.setVisibility(View.GONE);
+                	 ivLocal.setVisibility(View.INVISIBLE);
                  
-                 if (s.host == null)
-                	 ivRemote.setVisibility(View.GONE);
-                 else
+                 if (s.isDaap)
                 	 ivRemote.setVisibility(View.VISIBLE);
+                 else
+                	 ivRemote.setVisibility(View.INVISIBLE);
                  
                  tvTitle.setText(s.toTrackTitleString());
                  tvTitle.setTextSize(font_size);
