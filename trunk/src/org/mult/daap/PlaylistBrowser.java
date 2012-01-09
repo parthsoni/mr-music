@@ -101,16 +101,16 @@ public class PlaylistBrowser extends Activity implements Observer {
         public void onItemClick(AdapterView<?> parent, View v, int position,
                 long id) {
             try {
-                if (Library.playlist_position != position) {
+               // if (Library.playlist_position != position) {
                     // clicking new list
                     GetSongsForPlaylist gsfp = new GetSongsForPlaylist(
                             l.get(position));
                     grabSongs(gsfp);
                     Library.playlist_position = (short) position;
-                }
-                else {
-                    uiHandler.sendEmptyMessage(GetSongsForPlaylist.FINISHED);
-                }
+                //}
+                //else {
+                //    uiHandler.sendEmptyMessage(GetSongsForPlaylist.FINISHED);
+                //}
             } catch (Exception e) {
                 e.printStackTrace();
             }

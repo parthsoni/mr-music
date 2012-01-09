@@ -496,6 +496,22 @@ public class MediaSources extends Activity implements Observer {
                     getString(R.string.fetching_music_title),
                     getString(R.string.fetching_music_detail), true, false);
  		}
+		else if (((Integer) data).compareTo(GetSongsForPlaylist.MERGING)  == 0) {
+        	if (pd != null) {
+        		pd.dismiss();
+        	}
+        	pd = ProgressDialog.show(this,
+        			getString(R.string.merging_title),
+					getString(R.string.merging_detail), true, false);
+        }
+        else if (((Integer) data).compareTo(GetSongsForPlaylist.SORTING)  == 0) {
+        	if (pd != null) {
+        		pd.dismiss();
+        	}
+        	pd = ProgressDialog.show(this,
+        			getString(R.string.sorting_title),
+					getString(R.string.sorting_detail), true, false);
+        }
         else if (((Integer) data).compareTo(GetSongsForPlaylist.FINISHED) == 0) {
             uiHandler.sendEmptyMessage(GetSongsForPlaylist.FINISHED);
         }

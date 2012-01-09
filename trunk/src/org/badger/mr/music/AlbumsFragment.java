@@ -86,7 +86,7 @@ public class AlbumsFragment extends FragmentActivity {
    		    albumList = Library.albumBrowseList;
    		    //AlbumComparator albc = new AlbumComparator();
             //Collections.sort(albumList,albc);
-   		    adapter = new AlbumListAdapter<Album>(MrMusic.context, R.xml.long_list_text_view, albumList);
+   		    adapter = new AlbumListAdapter<Album>(MrMusic.context,albumList);
    		 	//adapter.insert("All Albums for " + artistName, 0);
    		 	Log.i("AlbumListFragment","Created Filtered Album List. Size: " + adapter.getCount());
             

@@ -29,6 +29,7 @@ public class GetSongsForPlaylist extends Observable implements Runnable {
     public static int EMPTY = 23;
     public static int START = 24;
     public static int MERGING = 25;
+    public static int SORTING = 26;
 
     public GetSongsForPlaylist(DaapPlaylist playList) {
         this.playList = playList;
@@ -51,32 +52,21 @@ public class GetSongsForPlaylist extends Observable implements Runnable {
     }
 
     public void processContents(ArrayList<Song> songs){
-    	
+    	Log.i("GetSongsForPlaylist","Processing Playlist. Raw Song Count: "+ songs.size());
+    	notifyAndSet(MERGING);
     	if (songs.size() == 0) {
             notifyAndSet(EMPTY);
             return;
         }
         for (Song song : songs) {
-          /**  if (Contents.ArtistElements.containsKey(song.artist)) {
-                Contents.ArtistElements.get(song.artist).add(song.id);
-            }
-            else {
-                ArrayList<Integer> t = new ArrayList<Integer>();
-                t.add(song.id);
-                Contents.ArtistElements.put(song.artist, t);
-            }
-            if (Contents.AlbumElements.containsKey(song.album)) {
-                Contents.AlbumElements.get(song.album).add(song.id);
-            }
-            else {
-                ArrayList<Integer> t = new ArrayList<Integer>();
-                t.add(song.id);
-                Contents.AlbumElements.put(song.album, t);
-            }
-            Library.addSong(song);**/
         	Library.addSong(song);
         }
+        Log.i("GetSongsForPlaylist","Songs: " + Library.songs.size());
+        Log.i("GetSongsForPlaylist","Albums: " + Library.songs.size());
+        Log.i("GetSongsForPlaylist","Artists: " + Library.songs.size());
         Library.setFilters();
+        notifyAndSet(SORTING);
+        
         Library.artistBrowseList = Library.getArtistList(Library.artists);
         Library.sortLists();
         notifyAndSet(FINISHED);
@@ -94,7 +84,7 @@ public class GetSongsForPlaylist extends Observable implements Runnable {
         	Log.i("GSFP","Building Local Playlist");
         	localList = new LocalPlaylist(activityContext);
         	rawList = localList.getSongs();
-        	Log.i("GSFP","Playlist size: " + rawList.size());
+        	Log.i("GSFP","Local Playlist size: " + rawList.size());
         	if (playList != null) {
         		
 	        	//Build Daap Playlist
@@ -105,7 +95,7 @@ public class GetSongsForPlaylist extends Observable implements Runnable {
 	            else
 	            	rawList.addAll((ArrayList<Song>) playList.getSongs());
 	            	//Collections.copy(rawList,(ArrayList<Song>) playList.getSongs());
-	            Log.i("GSFP","Playlist size: " + rawList.size());
+	            Log.i("GSFP","Daap Playlist size: " + rawList.size());
 	        }
         	else
     			Library.address = InetAddress.getLocalHost();

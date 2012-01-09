@@ -10,12 +10,16 @@ import android.util.Log;
 public class Artist implements Comparable<Object>{
 	public String name;
 	public LinkedHashMap<String,Album> albums;
+	public int HasLocal;
+	public int HasDaap;
 
 	public Artist(String n) {
 		name = n;
 		albums = new LinkedHashMap<String,Album>();
 		Library.addArtist(this);
-		Log.i("Artist","Creating Artist "+ name);
+		//Log.i("Artist","Creating Artist "+ name);
+		HasLocal = Library.HAS_NONE;
+		HasDaap = Library.HAS_NONE;
 	}
 	
 	public void addSong(Song s) {
@@ -26,6 +30,10 @@ public class Artist implements Comparable<Object>{
 			a = new Album(s.album);
 			addAlbum(a);
 		}
+		if (s.isDaap)
+			HasDaap = Library.HAS_SOME;
+		if (s.isLocal)
+			HasLocal = Library.HAS_SOME;
 		a.addSong(s);
 		
 	}
@@ -62,8 +70,17 @@ public class Artist implements Comparable<Object>{
 		return name;
 	}
 	
+	public String getSortSection(){
+		String section = name;
+		section.replaceFirst("^((the\\s+)|(a\\s+)|(an\\s+))", "");
+		return section.substring(0, 1).toUpperCase();
+	}
+	
 	public String getKey() {
-		return MediaStore.Audio.keyFor(this.name);
+		String key = MediaStore.Audio.keyFor(this.name);
+		if (key.length() == 0)
+			key = toString().toLowerCase();
+		return key;
 	}
 	
 	public int compareTo(Object another) {
