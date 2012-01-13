@@ -25,6 +25,7 @@ import org.mult.daap.client.widget.DAAPClientAppWidgetOneProvider;
 
 import org.badger.mr.music.DownloadBrowser;
 import org.badger.mr.music.MainPager;
+import org.badger.mr.music.MrMusic;
 import org.badger.mr.music.R;
 import org.badger.mr.music.download.DownloadSong;
 import org.badger.mr.music.library.Library;
@@ -51,6 +52,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -185,7 +187,8 @@ public class MediaPlayback extends Activity implements View.OnTouchListener,
 		mProgress.setOnSeekBarChangeListener(mSeekListener);
 		if (mediaPlayer == null) {
 			try {
-				startSong(Library.getPlayerSong());
+				song = Library.getPlayerSong();
+				startSong(song);
 			} catch (IndexOutOfBoundsException e) {
 				Log.e(logTag, "Something went wrong with playlist/queue");
 				e.printStackTrace();
@@ -229,40 +232,52 @@ public class MediaPlayback extends Activity implements View.OnTouchListener,
 		clearState();
 		mProgress.setEnabled(false);
 		mediaPlayer = new MediaPlayer();
-		MediaPlayback.song = song;
-		try {
-			if (song.isLocal) 
-				mediaPlayer.setDataSource(song.localPath);
-			else
-				mediaPlayer.setDataSource(Library.daapHost.getSongURL(song));
-			mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-			mediaPlayer.setOnCompletionListener(normalOnCompletionListener);
-			mediaPlayer.setOnErrorListener(mediaPlayerErrorListener);
-			mediaPlayer
-					.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-						public void onPrepared(MediaPlayer mp) {
-							mp.start();
-							mProgress.setEnabled(true);
-							stopNotification();
-							startNotification();
-							queueNextRefresh(refreshNow());
-							mAppWidgetProvider.notifyChange(
-									mMediaPlaybackService, MediaPlayback.this,
-									MediaPlaybackService.PLAYSTATE_CHANGED);
-						}
-					});
-			mediaPlayer.prepareAsync();
-			TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-			tm.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
-			setUpActivity();
-			if (scrobbler_support) {
-				scrobble(0); // START
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			Toast.makeText(this, R.string.media_playback_error,
-					Toast.LENGTH_LONG).show();
-			finish();
+		PlayerThread player = new PlayerThread();
+		player.execute(song);
+		setUpActivity();
+		
+	}
+	
+	class PlayerThread extends AsyncTask <Song, Integer, Integer> {
+
+		
+		@Override
+		protected Integer doInBackground(Song... songs) {
+			Song song = songs[0];
+			MediaPlayback.song = song;
+			try {
+				if (song.isLocal) 
+					mediaPlayer.setDataSource(song.localPath);
+				else
+					mediaPlayer.setDataSource(Library.daapHost.getSongURL(song));
+				mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+				mediaPlayer.setOnCompletionListener(normalOnCompletionListener);
+				mediaPlayer.setOnErrorListener(mediaPlayerErrorListener);
+				mediaPlayer
+						.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+							public void onPrepared(MediaPlayer mp) {
+								mp.start();
+								mProgress.setEnabled(true);
+								stopNotification();
+								startNotification();
+								queueNextRefresh(refreshNow());
+								mAppWidgetProvider.notifyChange(
+										mMediaPlaybackService, MediaPlayback.this,
+										MediaPlaybackService.PLAYSTATE_CHANGED);
+							}
+						});
+				mediaPlayer.prepareAsync();
+				TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+				tm.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+				if (scrobbler_support) {
+					scrobble(0); // START
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				Toast.makeText(MrMusic.getAppContext(), R.string.media_playback_error,
+						Toast.LENGTH_LONG).show();
+				finish();
+			}			return null;
 		}
 	}
 
