@@ -2,6 +2,8 @@ package org.badger.mr.music;
 
 import java.util.ArrayList;
 import java.util.Collections;
+
+import org.badger.mr.music.download.DownloadBrowser;
 import org.badger.mr.music.library.Library;
 import org.badger.mr.music.library.Artist;
 import org.badger.mr.music.ArtistListAdapter;

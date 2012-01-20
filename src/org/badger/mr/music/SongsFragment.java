@@ -2,6 +2,8 @@ package org.badger.mr.music;
 
 import java.util.ArrayList;
 import java.util.Collections;
+
+import org.badger.mr.music.download.DownloadBrowser;
 import org.badger.mr.music.library.Library;
 import org.badger.mr.music.library.Song;
 import org.mult.daap.MediaPlayback;
@@ -48,6 +50,13 @@ public class SongsFragment extends FragmentActivity {
             fm.beginTransaction().add(android.R.id.content, list).commit();
         }
     }
+    
+	public void onBackPressed(){
+    	final Intent intent = new Intent(this, MainPager.class);
+        intent.putExtra("tab", 1);
+        startActivity(intent);
+        this.finish();	
+	}
     
        
     

@@ -1,7 +1,6 @@
-package org.badger.mr.music.local;
+package org.badger.mr.music.library;
 
 import java.util.ArrayList;
-import org.badger.mr.music.library.Song;
 import org.mult.daap.client.Playlist;
 //import org.mult.daap.client.Song;
 

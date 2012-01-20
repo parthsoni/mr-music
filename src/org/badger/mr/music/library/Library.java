@@ -10,7 +10,7 @@ import org.badger.mr.music.AlbumComparator;
 import org.badger.mr.music.ArtistComparator;
 import org.badger.mr.music.SongComparator;
 import org.badger.mr.music.download.DownloadSong;
-import org.badger.mr.music.local.FileDownloader;
+import org.badger.mr.music.download.FileDownloader;
 import org.mult.daap.background.GetSongsForPlaylist;
 import org.mult.daap.background.LoginManager;
 import org.mult.daap.background.SearchThread;
@@ -50,7 +50,7 @@ public class Library {
 	public static final int SECTION_TYPE_SONG = 3;
 	public static final int SECTION_TYPE_ARTIST = 1;
 	public static int songSortType;
-	public static FileDownloader downloader;
+	//public static FileDownloader downloader;
 	public static LoginManager loginManager;
 	
 	public static boolean shuffle = false;

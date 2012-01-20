@@ -84,4 +84,6 @@
 	<string name="sorting_detail">Please wait while sorting music</string>
 	<string name="merging_title">Processing Library...</string>
 	<string name="merging_detail">Please wait while processing music library</string>
+	<string name="downloader">Download List</string>
+	<string name="noactivedownload">No Active Download</string>
 </resources>

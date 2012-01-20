@@ -2,6 +2,8 @@ package org.badger.mr.music;
 
 import java.util.ArrayList;
 import java.util.Collections;
+
+import org.badger.mr.music.download.DownloadBrowser;
 import org.badger.mr.music.library.Album;
 import org.badger.mr.music.library.Library;
 //import org.mult.daap.Contents;
@@ -47,6 +49,14 @@ public class AlbumsFragment extends FragmentActivity {
             fm.beginTransaction().add(android.R.id.content, list).commit();
         }
     }
+    
+    @Override
+	public void onBackPressed(){
+    	final Intent intent = new Intent(this, MainPager.class);
+        intent.putExtra("tab", 0);
+        startActivity(intent);
+        this.finish();	
+	}
     
     
     public static class AlbumListFragment extends ListFragment
@@ -180,6 +190,7 @@ public class AlbumsFragment extends FragmentActivity {
     	           }
     	        return false;
     	    }
+    	
     	
         @Override public void onListItemClick(ListView l, View v, int position, long id) {
             // Insert desired behavior here.

@@ -23,10 +23,10 @@ import java.util.Locale;
 
 import org.mult.daap.client.widget.DAAPClientAppWidgetOneProvider;
 
-import org.badger.mr.music.DownloadBrowser;
 import org.badger.mr.music.MainPager;
 import org.badger.mr.music.MrMusic;
 import org.badger.mr.music.R;
+import org.badger.mr.music.download.DownloadBrowser;
 import org.badger.mr.music.download.DownloadSong;
 import org.badger.mr.music.library.Library;
 import org.badger.mr.music.library.Song;

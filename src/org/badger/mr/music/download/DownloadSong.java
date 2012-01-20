@@ -7,13 +7,13 @@ import org.badger.mr.music.library.Song;
 public class DownloadSong extends Song {
 	public int progress;
 	public int status;
-	public static int STATUS_COMPLETE = 0;
-	public static int STATUS_INPROGRESS = 1;
-	public static int STATUS_CANCELLED = 2;
-	public static int STATUS_NOTSTARTED = 3;
-	public static int STATUS_PAUSED = 4;
-	public static int STATUS_ERROR = 5;
-	public static int STATUS_FILELOCAL = 6;
+	public final static int STATUS_COMPLETE = 0;
+	public final static int STATUS_INPROGRESS = 1;
+	public final static int STATUS_CANCELLED = 2;
+	public final static int STATUS_NOTSTARTED = 3;
+	public final static int STATUS_PAUSED = 4;
+	public final static int STATUS_ERROR = 5;
+	public final static int STATUS_FILELOCAL = 6;
 	
 	public DownloadSong() {
 		super();
