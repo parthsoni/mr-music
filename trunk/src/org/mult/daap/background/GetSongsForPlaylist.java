@@ -7,8 +7,8 @@ import java.util.Collections;
 import java.util.Observable;
 
 import org.badger.mr.music.library.Library;
+import org.badger.mr.music.library.LocalPlaylist;
 import org.badger.mr.music.library.Song;
-import org.badger.mr.music.local.LocalPlaylist;
 
 //import org.mult.daap.Contents;
 import org.mult.daap.MediaPlayback;

@@ -40,7 +40,7 @@
         </receiver>
         <receiver android:name="org.mult.daap.MediaButtonIntentReceiver"></receiver>
         <service android:name="DownloaderService" android:description="@string/downloader_service_desc"></service>
-        <activity android:name="DownloadBrowser"></activity>
+        <activity android:name=".download.DownloadBrowser"></activity>
         <activity android:name="MainPager">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

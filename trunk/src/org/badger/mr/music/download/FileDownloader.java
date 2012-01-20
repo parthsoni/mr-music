@@ -1,9 +1,8 @@
-package org.badger.mr.music.local;
+package org.badger.mr.music.download;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import org.badger.mr.music.download.DownloadSong;
 import org.badger.mr.music.library.Library;
 
 
