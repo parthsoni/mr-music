@@ -2,21 +2,22 @@ package org.badger.mr.music;
 
 import java.util.Comparator;
 
+import org.badger.mr.music.library.Library;
 import org.badger.mr.music.library.Song;
 
 
 
 import android.provider.MediaStore;
 
-public class SongComparator  implements Comparator<Song> {
+public class SongArtistAlbumTrackComparator  implements Comparator<Song> {
 	
 
 	public int compare(Song s1, Song s2) {
 		int ret;
-		
-		ret =  MediaStore.Audio.keyFor(s1.artist).compareTo(MediaStore.Audio.keyFor(s2.artist));
+		//Sort by Artist, then Album, then track
+		ret =  Library.KeyFor(s1.artist).compareTo(Library.KeyFor(s2.artist));
 		if (ret == 0) {
-			ret = MediaStore.Audio.keyFor(s1.album).compareTo(MediaStore.Audio.keyFor(s2.album));
+			ret = Library.KeyFor(s1.album).compareTo(Library.KeyFor(s2.album));
 		}
 		if (ret == 0) {
 			ret = s1.disc_num - s2.disc_num; 

@@ -98,10 +98,16 @@ public class AlbumListAdapter<T> extends ArrayAdapter<T> implements SectionIndex
                	 ivRemote.setVisibility(View.VISIBLE);
                 else
                	 ivRemote.setVisibility(View.INVISIBLE);
-                
-                tvTitle.setText(a.toString());
+                if (a.isAllAlbums) {
+                	tvTitle.setText("All Albums");
+                	tvAlbumArtist.setText("");
+                }
+                else {
+                	tvTitle.setText(a.toString());
+                	tvAlbumArtist.setText(a.artistList.toString());
+                }
                 tvTitle.setTextSize(font_size);
-                tvAlbumArtist.setText(a.artistList.toString());
+                
                 // tvLength.setText(s.getTime());
         }
         return v;

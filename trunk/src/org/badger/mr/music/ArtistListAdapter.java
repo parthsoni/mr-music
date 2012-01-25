@@ -96,8 +96,13 @@ public class ArtistListAdapter<T> extends ArrayAdapter<T> implements SectionInde
                	 ivRemote.setVisibility(View.VISIBLE);
                 else
                	 ivRemote.setVisibility(View.INVISIBLE);
-                
-                tvTitle.setText(a.toString());
+                if (a.isAllArtists) {
+                	tvTitle.setText("All Artists");
+                }
+                else
+                {
+                	tvTitle.setText(a.toString());
+                }
                 tvTitle.setTextSize(font_size);
                 tvAlbumArtist.setVisibility(View.GONE);
                 // tvLength.setText(s.getTime());

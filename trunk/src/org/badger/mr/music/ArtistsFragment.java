@@ -62,6 +62,7 @@ public class ArtistsFragment extends FragmentActivity {
         private static final int CONTEXT_SAVE_ARTIST = 5;
         private static final int MENU_ABOUT = 1;
     	private static final int MENU_PREFS = 2;
+    	private static final int MENU_DOWNLOADS = 4;
     	
     	@Override public void onActivityCreated(Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
@@ -79,7 +80,8 @@ public class ArtistsFragment extends FragmentActivity {
             //	Contents.artistNameList.remove(0);
             
             // Create an empty adapter we will use to display the loaded data.
-            artistList = Library.artistBrowseList;
+            artistList = Library.getArtistList(Library.artists);
+            artistList.add(0, new Artist());
             //ArtistComparator artc = new ArtistComparator();
             //Collections.sort(artistList,artc);
             Log.i("AristListFragment","Creating Artist List " + artistList.size() );
@@ -141,6 +143,8 @@ public class ArtistsFragment extends FragmentActivity {
                     android.R.drawable.ic_menu_search);
             menu.add(0, MENU_PREFS, 0, getString(R.string.preferences)).setIcon(
     				android.R.drawable.ic_menu_preferences);
+            menu.add(0, MENU_DOWNLOADS, 0, getString(R.string.downloader)).setIcon(android.R.drawable.ic_menu_save);
+            
             menu.add(0, MENU_ABOUT, 0, R.string.about_info).setIcon(
     				R.drawable.ic_menu_about);
     		
@@ -164,6 +168,11 @@ public class ArtistsFragment extends FragmentActivity {
         			intent = new Intent(getActivity().getBaseContext(), Preferences.class);
         			startActivity(intent);
         			return true;
+        		case MENU_DOWNLOADS:
+	       			Intent dlintent = new Intent(getActivity().getBaseContext(),
+                			DownloadBrowser.class);
+                	startActivity(dlintent);
+                	return true;
         	
             }
             return false;

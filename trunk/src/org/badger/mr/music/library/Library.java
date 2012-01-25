@@ -3,12 +3,14 @@ package org.badger.mr.music.library;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
+import java.util.SortedMap;
+import java.util.TreeMap;
+//import java.util.LinkedHashMap;
 import java.util.Random;
 
 import org.badger.mr.music.AlbumComparator;
 import org.badger.mr.music.ArtistComparator;
-import org.badger.mr.music.SongComparator;
+import org.badger.mr.music.SongArtistAlbumTrackComparator;
 import org.badger.mr.music.download.DownloadSong;
 import org.badger.mr.music.download.FileDownloader;
 import org.mult.daap.background.GetSongsForPlaylist;
@@ -21,16 +23,21 @@ import android.util.Log;
 
 public class Library {
 	//public static ArrayList<Song> songs = new ArrayList<Song>();
-	public static LinkedHashMap<String,Song> songs = new LinkedHashMap<String,Song>();
-	public static LinkedHashMap<String,Artist> artists = new LinkedHashMap<String,Artist>();
-	public static LinkedHashMap<String,Album> albums = new LinkedHashMap<String,Album>();
-	public static LinkedHashMap<String,Album> filteredAlbums = new LinkedHashMap<String,Album>();
-	public static LinkedHashMap<String,Song> filteredSongs = new LinkedHashMap<String,Song>();
+	//public static LinkedHashMap<String,Song> songs = new LinkedHashMap<String,Song>();
+	//public static LinkedHashMap<String,Artist> artists = new LinkedHashMap<String,Artist>();
+	//public static LinkedHashMap<String,Album> albums = new LinkedHashMap<String,Album>();
+	//public static LinkedHashMap<String,Album> filteredAlbums = new LinkedHashMap<String,Album>();
+	//public static LinkedHashMap<String,Song> filteredSongs = new LinkedHashMap<String,Song>();
+	public static SortedMap<String,Song> songs = new TreeMap<String,Song>();
+	public static SortedMap<String,Artist> artists = new TreeMap<String,Artist>();
+	public static SortedMap<String,Album> albums = new TreeMap<String,Album>();
+	public static SortedMap<String,Album> filteredAlbums = new TreeMap<String,Album>();
+	public static SortedMap<String,Song> filteredSongs = new TreeMap<String,Song>();
 	public static ArrayList<Song> playQueue = new ArrayList<Song>();
 	public static ArrayList<DownloadSong> downloadList = new ArrayList<DownloadSong>();
-	public static ArrayList<Album> albumBrowseList = new ArrayList<Album>();
-	public static ArrayList<Song> songBrowseList = new ArrayList<Song>();
-	public static ArrayList<Artist> artistBrowseList = new ArrayList<Artist>();
+	//public static ArrayList<Album> albumBrowseList = new ArrayList<Album>();
+	//public static ArrayList<Song> songBrowseList = new ArrayList<Song>();
+	//public static ArrayList<Artist> artistBrowseList = new ArrayList<Artist>();
 	public static String artistFilter = "";
 	public static String albumFilter = "";
 	public static int playposition;
@@ -46,11 +53,11 @@ public class Library {
 	public static SearchThread searchResult;
     
 	
-    public static final int SECTION_TYPE_ALBUM = 2;
-	public static final int SECTION_TYPE_SONG = 3;
-	public static final int SECTION_TYPE_ARTIST = 1;
+    public static final int SORT_SONG_TRACK = 2;
+	public static final int SORT_SONG_TITLE = 3;
+	public static final int SORT_SONG_ALBUM = 1;
 	public static int songSortType;
-	//public static FileDownloader downloader;
+	public static org.badger.mr.music.download.DownloadBrowser.FileDownloader downloader;
 	public static LoginManager loginManager;
 	
 	public static boolean shuffle = false;
@@ -65,8 +72,8 @@ public class Library {
 			Log.i("Library","   Unfiltered ");
 			filteredAlbums.putAll(albums);
 			filteredSongs.putAll(songs);
-			//If we have no artist filter and no album filter, then sort by artist then album then song
-			songSortType = SECTION_TYPE_ARTIST;
+			//If we have no artist filter and no album filter, then sort by song title
+			songSortType = SORT_SONG_TITLE;
 		}
 		else if ((artistFilter.length() > 0) && (albumFilter.length() == 0)) {
 			Artist filterArtist = getArtist(artistFilter);
@@ -74,8 +81,8 @@ public class Library {
 			//if (filterArtist != null) {
 				filteredSongs.putAll(filterArtist.getSongs());
 				filteredAlbums.putAll(filterArtist.getAlbums());
-				//If we have an artist filter and no album filter then sort by album then song
-				songSortType = SECTION_TYPE_ALBUM;
+				//If we have an artist filter and no album filter then sort by album then track
+				songSortType = SORT_SONG_ALBUM;
 				/*AlbumComparator albc = new AlbumComparator();
 		        Collections.sort(filteredAlbums,albc);
 			    SongComparator snc = new SongComparator();
@@ -89,7 +96,7 @@ public class Library {
 				filteredAlbums.putAll(albums);
 				filteredSongs.putAll(filterAlbum.getSongs());
 				//If we have no artist filter and an album filter then sort by song
-				songSortType = SECTION_TYPE_SONG;
+				songSortType = SORT_SONG_TRACK;
                 /**SongComparator snc = new SongComparator();
 		        Collections.sort(filteredSongs,snc);**/
 			//}
@@ -99,7 +106,7 @@ public class Library {
 			Artist filterArtist = getArtist(artistFilter);
 			Log.i("Library","   Filter Artist " + filterArtist + " Filter album: " + filterAlbum );
 			//If we have an artist filter and an album filter then sort by song
-			songSortType = SECTION_TYPE_SONG;
+			songSortType = SORT_SONG_TRACK;
 			//if (filterAlbum != null) {
 			//	filteredAlbums.add(filterAlbum);
 			//	if (filterArtist != null) {
@@ -111,21 +118,21 @@ public class Library {
 			//	}
 			//}
 		}
-		Log.i("Library","Sorting Lists");
-		albumBrowseList = getAlbumList(Library.filteredAlbums);
-		AlbumComparator albc = new AlbumComparator();
-        Collections.sort(albumBrowseList,albc);
-        songBrowseList = Library.getSongsList(Library.filteredSongs);
-		SongComparator snc = new SongComparator();
-        Collections.sort(songBrowseList,snc);
-        Log.i("Library","Finished Sorting");
+		//Log.i("Library","Sorting Lists");
+		//albumBrowseList = getAlbumList(Library.filteredAlbums);
+		//AlbumComparator albc = new AlbumComparator();
+        //Collections.sort(albumBrowseList,albc);
+        //songBrowseList = Library.getSongsList(Library.filteredSongs);
+		//SongComparator snc = new SongComparator();
+        //Collections.sort(songBrowseList,snc);
+        //Log.i("Library","Finished Sorting");
 	}
 	
 	public static void sortLists() {
-		 	
+	/**	 	
         ArtistComparator artc = new ArtistComparator();
         Collections.sort(artistBrowseList,artc);
-    /**    
+        
         AlbumComparator albc = new AlbumComparator();
         Collections.sort(albums,albc);
 	
@@ -133,15 +140,15 @@ public class Library {
         Collections.sort(songs,snc);**/
     }
 	
-	public static ArrayList<Song> getSongsList(LinkedHashMap<String,Song> songlist){
+	public static ArrayList<Song> getSongsList(SortedMap<String,Song> songlist){
 		return new ArrayList<Song>(songlist.values());
 	}
 	
-	public static ArrayList<Artist> getArtistList(LinkedHashMap<String,Artist> artistlist) {
+	public static ArrayList<Artist> getArtistList(SortedMap<String,Artist> artistlist) {
 		return new ArrayList<Artist>(artistlist.values());
 	}
 	
-	public static ArrayList<Album> getAlbumList(LinkedHashMap<String,Album> albumlist) {
+	public static ArrayList<Album> getAlbumList(SortedMap<String,Album> albumlist) {
 		return new ArrayList<Album>(albumlist.values());
 	}
 	
@@ -174,16 +181,13 @@ public class Library {
 	}
 	
 	public static void addSong(Song s) {
-		Log.i("Library","Adding Song" + s.toString());
-		Song existing = getSong(s);
-		if (existing == null) {
-			Artist artist = getArtist(s.artist);
-			if (artist == null) {
-				artist = new Artist(s.artist);
-			}
-			artist.addSong(s);
-			//songs.add(s);
+		//Log.i("Library","Adding Song" + s.toString());
+		Artist artist = getArtist(s.artist);
+		if (artist == null) {
+			artist = new Artist(s.artist);
 		}
+		artist.addSong(s);
+
 	}
 	
 	public static void addArtist(Artist a)
@@ -201,12 +205,12 @@ public class Library {
 	}
 	
 	public static Artist getArtist(String name) {
-		return artists.get(MediaStore.Audio.keyFor(name));
+		return artists.get(KeyFor(name));
 	}
 	
 	public static Album getAlbum(String name)
 	{
-		return albums.get(MediaStore.Audio.keyFor(name));
+		return albums.get(KeyFor(name));
 	}
 	
 	public static Song getSong(Song s) {
@@ -228,6 +232,13 @@ public class Library {
 		}
 		return ret**/
 		return songs.get(s.getHashKey());
+	}
+	
+	public static String KeyFor(String s) {
+		String key = MediaStore.Audio.keyFor(s);
+		if (key.length() == 0)
+			key = s.toLowerCase();
+		return key;
 	}
 	
 	public static Song getPlayerSong() throws IndexOutOfBoundsException {
