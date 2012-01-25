@@ -9,6 +9,7 @@ import org.badger.mr.music.library.Library;
 import org.mult.daap.MediaPlayback;
 import org.mult.daap.background.GetSongsForPlaylist;
 
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -84,11 +85,27 @@ public class MainPager extends FragmentActivity implements Observer {
     private View.OnClickListener libSourceListener = new View.OnClickListener() {
 		public void onClick(View v) {
 			final Intent intent = new Intent(MainPager.this, MediaSources.class);
-            startActivity(intent);
+            startActivityForResult(intent,1);
+           
 		}
 	};
-    
 	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_CANCELED) {
+            setResult(Activity.RESULT_CANCELED);
+            finish();
+        }
+    }
+    
+	@Override
+	public void onBackPressed(){
+    	int activeTab = mTabHost.getCurrentTab();
+    	if (activeTab > 0) {
+    		mTabHost.setCurrentTab(activeTab -1);
+    	}
+    	else
+    		this.finish();
+	}
 	
 	private Handler uiHandler = new Handler() {
         @Override

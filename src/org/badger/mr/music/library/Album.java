@@ -2,36 +2,49 @@ package org.badger.mr.music.library;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import android.provider.MediaStore;
 import android.util.Log;
 
 public class Album implements Comparable<Object> {
 	public String name;
-	public LinkedHashMap<String,Song> songs;
+	public SortedMap<String,Song> songs;
 	public ArrayList<String> artistList;
 	public int HasLocal;
 	public int HasDaap;
+	public boolean isAllAlbums;
 	
 	public Album(String n) {
 		name = n;
-		songs = new LinkedHashMap<String,Song>();
-		Library.addAlbum(this);
+		songs = new TreeMap<String,Song>();
 		artistList = new ArrayList<String>();
-		Log.i("Album","Created Album " + name);
+		//Log.i("Album","Created Album " + name);
+		//Log.i("Album","Key: "+ getKey());
 		HasLocal = Library.HAS_NONE;
 		HasDaap = Library.HAS_NONE;
+		isAllAlbums = false;
+		Library.addAlbum(this);
+		
+	}
+	
+	public Album () {
+		name = "";
+		HasLocal = Library.HAS_NONE;
+		HasDaap = Library.HAS_NONE;
+		isAllAlbums = true;
 	}
 	
 	public void addSong(Song s) {
 		Song existing = getSong(s);
 		if (existing == null) {
-			Log.i("Album","Adding " + s.name);
+		//	Log.i("Album","Adding " + s.name);
 			songs.put(s.getHashKey(),s);
 			Library.songs.put(s.getHashKey(),s);
 		}
 		else {
-			Log.i("Album","Merging " + s.name);
+		//	Log.i("Album","Merging " + s.name);
 			existing.mergeSong(s);
 		}
 		if (!artistList.contains(s.artist))
@@ -50,7 +63,7 @@ public class Album implements Comparable<Object> {
 	}
 	
 	
-	public LinkedHashMap<String,Song> getSongs() {
+	public SortedMap<String,Song> getSongs() {
 		return songs;
 	}
 	
@@ -69,15 +82,17 @@ public class Album implements Comparable<Object> {
 	}
 	
 	public boolean isSame(String othertitle) {
-		return getKey().equals(MediaStore.Audio.keyFor(othertitle));
+		return getKey().equals(Library.KeyFor(othertitle));
 	}
 	
 	public String getKey() {
-		String key = MediaStore.Audio.keyFor(this.name);
+		return Library.KeyFor(this.name);
+		/**String key = MediaStore.Audio.keyFor(this.name);
 		if (key.length() == 0)
 			key = toString().toLowerCase();
-		return key;
 		
+		return key;
+			**/
 	}
 	
 	public String getSortSection(){
@@ -105,7 +120,7 @@ public class Album implements Comparable<Object> {
 			ret = this.getKey().compareTo(((Album) another).getKey());
 	
 		} else if (another instanceof String) {
-			ret = this.getKey().compareTo(MediaStore.Audio.keyFor((String) another));
+			ret = this.getKey().compareTo(Library.KeyFor((String) another));
 		}
 		else
 			ret = 0;

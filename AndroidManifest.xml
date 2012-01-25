@@ -13,7 +13,7 @@
 
     <application
         android:icon="@drawable/icon"
-        android:label="@string/app_name" android:name=".MrMusic">
+        android:label="@string/app_name" android:name=".MrMusic" android:theme="@android:style/Theme.Holo" android:logo="@drawable/icon">
         <activity android:label="@string/app_name" android:name="MediaSources">
             <intent-filter>
                 <action android:name="android.intent.action.PICK"/>

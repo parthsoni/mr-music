@@ -5,7 +5,11 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Observable;
+import java.util.Observer;
 
+import org.badger.mr.music.MainPager;
+import org.badger.mr.music.MediaSources;
 import org.badger.mr.music.R;
 import org.badger.mr.music.library.Library;
 
@@ -23,6 +27,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -30,7 +35,11 @@ import android.widget.TextView;
 public class DownloadBrowser extends ListActivity {
 	ProgressBar dlprogress;
 	TextView activedownload;
-	FileDownloader downloader;
+	Button btnClear;
+	Button btnCancelAll;
+	Button btnCancelCurrent;
+	
+	//FileDownloader downloader;
 	dlArrayAdapter<DownloadSong> downloadAdapter;
 	public static final int STATUS_COMPLETE = 0;
 	public static final int STATUS_ACTIVE = 1;
@@ -45,10 +54,7 @@ public class DownloadBrowser extends ListActivity {
 	        setResult(Activity.RESULT_OK);
 	        
 	        setContentView(R.layout.download_browser);
-	        dlprogress =  (ProgressBar)findViewById(R.id.downloadprogress);
-	        dlprogress.setMax(100);
-	        activedownload = (TextView) findViewById(R.id.active_download);
-	        createList();
+	        
 	        
 	        
 	    }
@@ -60,12 +66,31 @@ public class DownloadBrowser extends ListActivity {
 	    public void onResume() {
 	        super.onResume();
 	        
-	        if (downloader == null) {
+	        if (Library.downloader == null) {
 	        	Log.i("DownloadBrowser","Creating new Downloader");
 	        	//downloader = new FileDownloader(this,activedownload);
-	        	downloader = new FileDownloader(this);
-	        	downloader.execute((Void) null);
+	        	Library.downloader = new FileDownloader(this);
+	        	Library.downloader.execute((Void) null);
 	        }
+	        else if (Library.downloader.status == FileDownloader.STATUS_IDLE) {
+	        	Log.i("DownloadBrowser","Idle downloader. Restarting");
+	        	//downloader = new FileDownloader(this,activedownload);
+	        	Library.downloader = null;
+	        	Library.downloader = new FileDownloader(this);
+	        	Library.downloader.execute((Void) null);
+	        }
+	        	
+	        dlprogress =  (ProgressBar)findViewById(R.id.downloadprogress);
+	        dlprogress.setMax(100);
+	        
+	        btnClear = (Button) findViewById(R.id.button_clearcomplete);
+	        btnClear.setOnClickListener(btnClearListener);
+	        btnCancelAll = (Button) findViewById(R.id.button_cancel_all);
+	        btnCancelAll.setOnClickListener(btnCancelAllListener);
+	        btnCancelCurrent = (Button) findViewById(R.id.button_cancel_active_download);
+	        btnCancelCurrent.setOnClickListener(btnCancelCurrentListener);
+	        activedownload = (TextView) findViewById(R.id.active_download);
+	        createList();
 	        /**else if (downloader.status == FileDownloader.STATUS_IDLE) {
 	        	Log.i("DownloadBrowser","Idle Downloader Rebuilding");
 	        	downloader = new FileDownloader(this,dlprogress,activedownload);
@@ -77,7 +102,26 @@ public class DownloadBrowser extends ListActivity {
 	      //  }
 	        
 	    }
+	    
+	    private View.OnClickListener btnClearListener = new View.OnClickListener() {
+			public void onClick(View v) {
+				clearComplete();
+			}
+		};
 
+		private View.OnClickListener btnCancelCurrentListener = new View.OnClickListener() {
+			public void onClick(View v) {
+				Library.downloader.cancel(true);
+			}
+		};
+
+		private View.OnClickListener btnCancelAllListener = new View.OnClickListener() {
+			public void onClick(View v) {
+				Library.downloader.cancel(true);
+				cancelPending();
+			}
+		};
+		
 	    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 	        if (resultCode == Activity.RESULT_CANCELED) {
 	            setResult(Activity.RESULT_CANCELED);
@@ -90,7 +134,7 @@ public class DownloadBrowser extends ListActivity {
 	    }
 	    
 	    public void setViews(){
-	    	if ((downloader == null) || (downloader.status == FileDownloader.STATUS_IDLE)) {
+	    	if ((Library.downloader == null) || (Library.downloader.status == FileDownloader.STATUS_IDLE)) {
 	    		activedownload.setText(getString(R.string.noactivedownload));
 	    		dlprogress.setProgress(0);
 	    	}
@@ -111,7 +155,32 @@ public class DownloadBrowser extends ListActivity {
 	    	else {
 	    		downloadAdapter.notifyDataSetChanged();
 	    	}
-	    }    
+	    }  
+	    
+	    public void clearComplete() {
+	    	ArrayList<DownloadSong> newList = new ArrayList<DownloadSong>();
+        	for (DownloadSong s: Library.downloadList) {
+        		if (!((s.status == DownloadSong.STATUS_CANCELLED) ||
+        				(s.status == DownloadSong.STATUS_COMPLETE) ||
+        				(s.status == DownloadSong.STATUS_ERROR) ||
+        				(s.status == DownloadSong.STATUS_FILELOCAL)))
+        			newList.add(s);
+        	}
+        	Library.downloadList.clear();
+        	Library.downloadList.addAll(newList);
+        	downloadAdapter.notifyDataSetChanged();
+        }
+        
+        public void cancelPending() {
+        	for (DownloadSong s: Library.downloadList) {
+        		if ((s.status == DownloadSong.STATUS_NOTSTARTED) ||
+        				(s.status == DownloadSong.STATUS_PAUSED))
+        			s.status = DownloadSong.STATUS_CANCELLED;
+        	}
+        	downloadAdapter.notifyDataSetChanged();
+        }
+	    
+	    
 	    
 	    class dlArrayAdapter<T> extends ArrayAdapter<T> {
 	        ArrayList<DownloadSong> myElements;
@@ -135,6 +204,8 @@ public class DownloadBrowser extends ListActivity {
 	        public int getCount() {
 	            return myElements.size();
 	        }
+	        
+	       
 	        
 	        @Override
 	    	public View getView(int position, View convertView, ViewGroup parent) {
@@ -174,7 +245,7 @@ public class DownloadBrowser extends ListActivity {
 	        
 	    }
 	        
-	    class FileDownloader extends AsyncTask <Void, Integer, Integer>  {
+	    public class FileDownloader extends AsyncTask <Void, Integer, Integer>  {
 	    	
 	    	private String savePath;
 	    	private Context parentContext;
@@ -238,6 +309,10 @@ public class DownloadBrowser extends ListActivity {
 	    			    		destinationStream.write(buffer, 0, len);
 	    			    		bytesDl += len;
 	    			    		publishProgress((int) (bytesDl*100)/s.size);
+	    			    		if (isCancelled()) {
+	    			    			s.status = DownloadSong.STATUS_CANCELLED;
+	    			    			break;
+	    			    		}
 	    			    		//Log.i("FileDownloader","Downloaded Pct: " + (int) (bytesDl*100)/s.size );
 	    			    	}
 	    			    	if (songStream != null)
@@ -248,12 +323,14 @@ public class DownloadBrowser extends ListActivity {
 	    			    	}
 	    			    	Log.i("FileDownloader","Saved " + bytesDl + "bytes");
 	    			    	destination.deleteOnExit();
-	    			    	s.status = DownloadSong.STATUS_COMPLETE;
+	    			    	if (s.status != DownloadSong.STATUS_CANCELLED)
+	    			    		s.status = DownloadSong.STATUS_COMPLETE;
 	    			    	//Refresh the Mediastore
 	    					//Add the local song to the media list
 	    	
 	    			    } 
 	    			    catch (Exception e) {
+	    			    	
 	    			    	s.status = DownloadSong.STATUS_ERROR;
 	    			    	e.printStackTrace();
 	    			    }
@@ -296,5 +373,7 @@ public class DownloadBrowser extends ListActivity {
 	        // }
 
 	    }
+
+		
 
 }

@@ -104,6 +104,13 @@ public class MediaSources extends Activity implements Observer {
 		super.onCreate(savedInstanceState);
 		localLabel = getString(R.string.local_servers);
 	}
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_CANCELED) {
+            setResult(Activity.RESULT_CANCELED);
+            finish();
+        }
+    }
 
 	protected Dialog onCreateDialog(int id) {
 		Dialog dialog;
@@ -494,7 +501,8 @@ public class MediaSources extends Activity implements Observer {
 		} else if (((Integer) data).compareTo(GetSongsForPlaylist.START) == 0) {
             pd = ProgressDialog.show(this,
                     getString(R.string.fetching_music_title),
-                    getString(R.string.fetching_music_detail), true, false);
+                    getString(R.string.fetching_music_detail), false, false);
+          
  		}
 		else if (((Integer) data).compareTo(GetSongsForPlaylist.MERGING)  == 0) {
         	if (pd != null) {
@@ -511,6 +519,7 @@ public class MediaSources extends Activity implements Observer {
         	pd = ProgressDialog.show(this,
         			getString(R.string.sorting_title),
 					getString(R.string.sorting_detail), true, false);
+        
         }
         else if (((Integer) data).compareTo(GetSongsForPlaylist.FINISHED) == 0) {
             uiHandler.sendEmptyMessage(GetSongsForPlaylist.FINISHED);

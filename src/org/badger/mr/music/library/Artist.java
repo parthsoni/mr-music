@@ -3,28 +3,42 @@ package org.badger.mr.music.library;
 
 
 import java.util.LinkedHashMap;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import android.provider.MediaStore;
 import android.util.Log;
 
 public class Artist implements Comparable<Object>{
 	public String name;
-	public LinkedHashMap<String,Album> albums;
+	public SortedMap<String,Album> albums;
 	public int HasLocal;
 	public int HasDaap;
+	public boolean isAllArtists;
 
 	public Artist(String n) {
 		name = n;
-		albums = new LinkedHashMap<String,Album>();
-		Library.addArtist(this);
+		albums = new TreeMap<String,Album>();
 		//Log.i("Artist","Creating Artist "+ name);
+		//Log.i("Artist","Key: "+ getKey());
+		isAllArtists = false;
 		HasLocal = Library.HAS_NONE;
 		HasDaap = Library.HAS_NONE;
+		Library.addArtist(this);
+		
+	}
+	
+	public Artist() {
+		name = "";
+		//albums.putAll(Library.albums);
+		HasLocal = Library.HAS_NONE;
+		HasDaap = Library.HAS_NONE;
+		isAllArtists = true;
 	}
 	
 	public void addSong(Song s) {
 		//Find the album and add to it
-		Log.i("Artist","Adding " + s.name + " to album " + s.album);
+		//Log.i("Artist","Adding " + s.name + " to album " + s.album);
 		Album a = getAlbum(s.album);
 		if (a == null) {
 			a = new Album(s.album);
@@ -39,12 +53,12 @@ public class Artist implements Comparable<Object>{
 	}
 	
 	public boolean isSame(String othername) {
-		return getKey().equals(MediaStore.Audio.keyFor(othername));
+		return getKey().equals(Library.KeyFor(othername));
 	}
 	
-	public LinkedHashMap<String,Song> getSongs() {
+	public SortedMap<String,Song> getSongs() {
 		
-		LinkedHashMap<String,Song> songlist = new LinkedHashMap<String,Song>();
+		SortedMap<String,Song> songlist = new TreeMap<String,Song>();
 		for (String albumkey  : albums.keySet()) {
 			songlist.putAll(albums.get(albumkey).getSongs());
 		}
@@ -53,7 +67,7 @@ public class Artist implements Comparable<Object>{
 	}
 	
 	
-	public LinkedHashMap<String,Album> getAlbums() {
+	public SortedMap<String,Album> getAlbums() {
 		return albums;
 	}
 	
@@ -63,7 +77,7 @@ public class Artist implements Comparable<Object>{
 	
 	public Album getAlbum(String title) {
 		
-		return albums.get(MediaStore.Audio.keyFor(title));
+		return albums.get(Library.KeyFor(title));
 	}
 	
 	public String toString(){
@@ -77,10 +91,13 @@ public class Artist implements Comparable<Object>{
 	}
 	
 	public String getKey() {
-		String key = MediaStore.Audio.keyFor(this.name);
+		return Library.KeyFor(this.name);
+		/**
+		String key = Library.KeyFor(this.name);
 		if (key.length() == 0)
 			key = toString().toLowerCase();
 		return key;
+		**/
 	}
 	
 	public int compareTo(Object another) {
@@ -90,7 +107,7 @@ public class Artist implements Comparable<Object>{
 			ret = this.getKey().compareTo(((Artist) another).getKey());
 	
 		} else if (another instanceof String) {
-			ret = this.getKey().compareTo(MediaStore.Audio.keyFor((String) another));
+			ret = this.getKey().compareTo(Library.KeyFor((String) another));
 		}
 		else
 			ret = 0;

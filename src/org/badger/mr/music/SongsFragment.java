@@ -69,6 +69,8 @@ public class SongsFragment extends FragmentActivity {
         private static final int MENU_ABOUT = 1;
     	private static final int MENU_PREFS = 2;;
         private static final int MENU_SEARCH = 3;
+        private static final int MENU_DOWNLOADS = 4;
+        
 
     	
     	@Override public void onActivityCreated(Bundle savedInstanceState) {
@@ -78,9 +80,13 @@ public class SongsFragment extends FragmentActivity {
             setEmptyText("No songs");
             setHasOptionsMenu(true);
             
-            songList = Library.songBrowseList;
+            songList =  Library.getSongsList(Library.filteredSongs);
    		    //SongComparator snc = new SongComparator();
             //Collections.sort(songList,snc);
+            if ((Library.songSortType == Library.SORT_SONG_ALBUM) || (Library.songSortType == Library.SORT_SONG_TRACK)) {
+    			SongArtistAlbumTrackComparator snc = new SongArtistAlbumTrackComparator();
+    	        Collections.sort(songList,snc);
+    		}
             adapter = new SongListAdapter<Song>(MrMusic.context, songList,Library.songSortType);
             
             Log.i("SongListFragment","Created Song Adapter. Items: " +adapter.getCount());
@@ -132,6 +138,7 @@ public class SongsFragment extends FragmentActivity {
                     android.R.drawable.ic_menu_search);
             menu.add(0, MENU_PREFS, 0, getString(R.string.preferences)).setIcon(
     				android.R.drawable.ic_menu_preferences);
+            menu.add(0, MENU_DOWNLOADS, 0, getString(R.string.downloader)).setIcon(android.R.drawable.ic_menu_save);
             menu.add(0, MENU_ABOUT, 0, R.string.about_info).setIcon(
     				R.drawable.ic_menu_about);
     		
@@ -155,6 +162,11 @@ public class SongsFragment extends FragmentActivity {
         			intent = new Intent(getActivity().getBaseContext(), Preferences.class);
         			startActivity(intent);
         			return true;
+        		case MENU_DOWNLOADS:
+	       			Intent dlintent = new Intent(getActivity().getBaseContext(),
+                			DownloadBrowser.class);
+                	startActivity(dlintent);
+                	return true;
             }
             return false;
         }

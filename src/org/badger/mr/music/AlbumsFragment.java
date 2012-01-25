@@ -5,6 +5,7 @@ import java.util.Collections;
 
 import org.badger.mr.music.download.DownloadBrowser;
 import org.badger.mr.music.library.Album;
+import org.badger.mr.music.library.Artist;
 import org.badger.mr.music.library.Library;
 //import org.mult.daap.Contents;
 import org.mult.daap.MediaPlayback;
@@ -50,13 +51,7 @@ public class AlbumsFragment extends FragmentActivity {
         }
     }
     
-    @Override
-	public void onBackPressed(){
-    	final Intent intent = new Intent(this, MainPager.class);
-        intent.putExtra("tab", 0);
-        startActivity(intent);
-        this.finish();	
-	}
+    
     
     
     public static class AlbumListFragment extends ListFragment
@@ -68,6 +63,7 @@ public class AlbumsFragment extends FragmentActivity {
         private static final int MENU_ABOUT = 1;
     	private static final int MENU_PREFS = 2;
         private static final int MENU_SEARCH = 3;
+        private static final int MENU_DOWNLOADS = 4;
         private static final int CONTEXT_PLAY_ALBUM = 4;
         private static final int CONTEXT_SAVE_ALBUM = 5;
     	
@@ -81,42 +77,23 @@ public class AlbumsFragment extends FragmentActivity {
             // We have a menu item to show in action bar.
             setHasOptionsMenu(true);
    		 	Log.i("AlbumListFragment","Artist Filter: " + Library.artistFilter);
-   		 	//Contents.filteredAlbumNameList.clear();
-   		 	/**if (Contents.artistFilter.length() > 0) {
-   		 		//Set Title
-   		 		artistName = Contents.artistFilter;
-   		 	}
-   		 	else {
-   		 		Contents.filteredAlbumNameList.clear();
-            	Contents.filteredAlbumNameList.addAll(Contents.albumNameList);
-            	artistName = "All Artists";
-   		 	}
-   		 	
-   		 	;**/
-   		    albumList = Library.albumBrowseList;
-   		    //AlbumComparator albc = new AlbumComparator();
-            //Collections.sort(albumList,albc);
-   		    adapter = new AlbumListAdapter<Album>(MrMusic.context,albumList);
-   		 	//adapter.insert("All Albums for " + artistName, 0);
-   		 	Log.i("AlbumListFragment","Created Filtered Album List. Size: " + adapter.getCount());
-            
-            //Log.i("Albums Fragment","Setting up the albums list");
-            //KeyComparator kc = new KeyComparator();
-            //Collections.sort(Contents.albumNameList,kc);
-            
-            //adapter = new MyIndexerAdapter<String>(MrMusic.context, R.xml.long_list_text_view, Contents.albumNameList);
-            
-            //Log.i("AlbumListFragment","Created Album List. Size: " + adapter.getCount());
-            setListAdapter(adapter);
-            //adapter.notifyDataSetChanged();
+   		 
+   		    //adapter.notifyDataSetChanged();
         }
     	
     	@Override
     	public void onResume() {
     		 super.onResume();
     		 Log.i("AlbumListFragment","Resuming Album list");
-
-             adapter.notifyDataSetChanged();
+    		 //albumList =  Library.getAlbumList(Library.filteredAlbums); 
+    		 //albumList.add(0, new Album());
+    		 //adapter.notifyDataSetChanged();
+    		 albumList =  Library.getAlbumList(Library.filteredAlbums); 
+    		 albumList.add(0, new Album());
+    		 adapter = new AlbumListAdapter<Album>(MrMusic.context,albumList);
+    		 Log.i("AlbumListFragment","Created Filtered Album List. Size: " + adapter.getCount());
+             setListAdapter(adapter);
+             
     	}
     	@Override
         public  void onCreateContextMenu(ContextMenu menu, View v,
@@ -133,6 +110,7 @@ public class AlbumsFragment extends FragmentActivity {
             AdapterContextMenuInfo menuInfo = (AdapterContextMenuInfo) aItem
                     .getMenuInfo();
             Album album = albumList.get(menuInfo.position); 
+            Log.i("AlbumsFragment","Context Selected album : (" + menuInfo.position + ") " + album.toString());
             //Library.albumFilter = album.toString();
             //Library.setFilters();
             
@@ -163,6 +141,7 @@ public class AlbumsFragment extends FragmentActivity {
                     android.R.drawable.ic_menu_search);
             menu.add(0, MENU_PREFS, 0, getString(R.string.preferences)).setIcon(
     				android.R.drawable.ic_menu_preferences);
+            menu.add(0, MENU_DOWNLOADS, 0, getString(R.string.downloader)).setIcon(android.R.drawable.ic_menu_save);
             menu.add(0, MENU_ABOUT, 0, R.string.about_info).setIcon(
     				R.drawable.ic_menu_about);
             
@@ -186,6 +165,11 @@ public class AlbumsFragment extends FragmentActivity {
     	       			intent = new Intent(getActivity().getBaseContext(), Preferences.class);
     	       			startActivity(intent);
     	       			return true;
+    	       		case MENU_DOWNLOADS:
+    	       			Intent dlintent = new Intent(getActivity().getBaseContext(),
+                    			DownloadBrowser.class);
+                    	startActivity(dlintent);
+                    	return true;
     	       	
     	           }
     	        return false;
@@ -194,20 +178,12 @@ public class AlbumsFragment extends FragmentActivity {
     	
         @Override public void onListItemClick(ListView l, View v, int position, long id) {
             // Insert desired behavior here.
-            Log.i("AlbumsFragment", "Item clicked: " + id);
-            /**if (id == 0) {
-            	Contents.albumFilter = "";
-            }
-            else
-            {
-            	String album = Contents.filteredAlbumNameList.get(position);
-	            Contents.albumFilter = album;
-            }
-            Contents.buildSelectedSongList(position);
-	        **/
+            Log.i("AlbumsFragment", "Item clicked: " + id +" at position " + position);
+            
             Album album = albumList.get(position);
             Library.albumFilter = album.toString();
             Library.setFilters();
+            Log.i("AlbumsFragment","Item Selected album : (" + position + ") " + album.toString());
             
             final Intent intent = new Intent(getActivity(), MainPager.class);
             intent.putExtra("tab", 2);

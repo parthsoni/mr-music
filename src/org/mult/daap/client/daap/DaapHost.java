@@ -156,8 +156,8 @@ public class DaapHost extends Host {
             SingleDatabaseRequest g = new SingleDatabaseRequest(this);
             songs = g.getSongs();
             Log.d("DaapHost", "# of songs = " + songs.size());
-            Comparator<Song> sic = new SongIDComparator();
-            Collections.sort(songs, sic); // for efficiency in getSongById in
+            //Comparator<Song> sic = new SongIDComparator();
+            //Collections.sort(songs, sic); // for efficiency in getSongById in
                                           // Host
             g = null;
             PlaylistsRequest p = new PlaylistsRequest(this);

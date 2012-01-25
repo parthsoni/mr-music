@@ -53,7 +53,7 @@ public class GetSongsForPlaylist extends Observable implements Runnable {
 
     public void processContents(ArrayList<Song> songs){
     	Log.i("GetSongsForPlaylist","Processing Playlist. Raw Song Count: "+ songs.size());
-    	notifyAndSet(MERGING);
+    	//notifyAndSet(MERGING);
     	if (songs.size() == 0) {
             notifyAndSet(EMPTY);
             return;
@@ -62,12 +62,12 @@ public class GetSongsForPlaylist extends Observable implements Runnable {
         	Library.addSong(song);
         }
         Log.i("GetSongsForPlaylist","Songs: " + Library.songs.size());
-        Log.i("GetSongsForPlaylist","Albums: " + Library.songs.size());
-        Log.i("GetSongsForPlaylist","Artists: " + Library.songs.size());
+        Log.i("GetSongsForPlaylist","Albums: " + Library.albums.size());
+        Log.i("GetSongsForPlaylist","Artists: " + Library.artists.size());
         Library.setFilters();
-        notifyAndSet(SORTING);
+        //notifyAndSet(SORTING);
         
-        Library.artistBrowseList = Library.getArtistList(Library.artists);
+        //Library.artistBrowseList = Library.getArtistList(Library.artists);
         Library.sortLists();
         notifyAndSet(FINISHED);
     
@@ -81,9 +81,12 @@ public class GetSongsForPlaylist extends Observable implements Runnable {
         ArrayList<Song> rawList = new ArrayList<Song>();
         try {
         	//Build Local Playlist
-        	Log.i("GSFP","Building Local Playlist");
         	localList = new LocalPlaylist(activityContext);
+        	Log.i("GSFP","Building Local Playlist");
         	rawList = localList.getSongs();
+        	Log.i("GSFP","Local Playlist Complete");
+        	
+        	//localList.addSongs();
         	Log.i("GSFP","Local Playlist size: " + rawList.size());
         	if (playList != null) {
         		

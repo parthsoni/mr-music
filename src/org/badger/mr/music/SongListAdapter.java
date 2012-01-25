@@ -42,12 +42,13 @@ public class SongListAdapter<T> extends ArrayAdapter<T> implements SectionIndexe
 		font_size = Integer.valueOf(mPrefs.getString("font_pref", "18"));
 		vContext = context;
 		mySongs = (ArrayList<Song>) objects;
+		
 		sectionType = sType;
 		alphaIndexer = new HashMap<String, Integer>();
 		int size = mySongs.size();
 		for (int i = size - 1; i >= 0; i--) {
 			Song s = mySongs.get(i);
-			switch (sectionType) {
+			/**switch (sectionType) {
 				case Library.SECTION_TYPE_ARTIST: 
 					alphaIndexer.put(s.artist.toUpperCase(), i);
 					break;
@@ -57,11 +58,13 @@ public class SongListAdapter<T> extends ArrayAdapter<T> implements SectionIndexe
 				case Library.SECTION_TYPE_SONG:
 					//No Indexer
 					break;
-			}
+			}**/
+			alphaIndexer.put(s.toTrackTitleString().substring(0, 1).toUpperCase(), i);
 		}
 		sectionList = new ArrayList<String>(alphaIndexer.keySet()); // list can be
 		// sorted
 		Collections.sort(sectionList);
+		
 	}
 
 	@Override

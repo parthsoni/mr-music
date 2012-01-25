@@ -16,11 +16,6 @@
         android:layout_width="0dip" 
               android:layout_weight="1"/>
 
-        <Button
-            android:id="@+id/button_cancel_active_download"
-            android:layout_width="0dip"
-            android:layout_height="32dip"
-            android:text="Cancel" />
         
     </LinearLayout>
 
@@ -39,13 +34,22 @@
             android:id="@+id/button_clearcomplete"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="Clear Completed" />
+            android:text="Clear Completed" 
+            android:textSize="10dp"/>
 
         <Button
             android:id="@+id/button_cancel_all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cancel all" />
+            android:text="Cancel all" 
+            android:textSize="10dp"/>
+        <Button
+            android:id="@+id/button_cancel_active_download"
+            android:layout_width="0dip"
+            android:layout_height="32dip"
+            android:text="Cancel"
+            android:textSize="10dp" />
+        
 
     </LinearLayout>
 

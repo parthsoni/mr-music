@@ -98,9 +98,9 @@ public class Song implements Comparable<Object> {
 	public boolean isSame(String otherartist, String otheralbum, String othertitle) {
 		boolean ret;
 		//Log.i("Song","Comparing " + othertitle + " to " + this.name);
-		ret = MediaStore.Audio.keyFor(this.name).equals(MediaStore.Audio.keyFor(othertitle)) &&
-				 MediaStore.Audio.keyFor(this.artist).equals(MediaStore.Audio.keyFor(otherartist)) &&
-			     MediaStore.Audio.keyFor(this.album).equals(MediaStore.Audio.keyFor(otheralbum));
+		ret = Library.KeyFor(this.name).equals(Library.KeyFor(othertitle)) &&
+				Library.KeyFor(this.artist).equals(Library.KeyFor(otherartist)) &&
+				Library.KeyFor(this.album).equals(Library.KeyFor(otheralbum));
 		return ret;
 	}
 	
@@ -132,33 +132,40 @@ public class Song implements Comparable<Object> {
 	}
 	
 	public String toTrackTitleString() {
+		
 		//return track + " " + name;
 		return name;
 	}
 	
 	public String getHashKey() {
 		
-		return MediaStore.Audio.keyFor(name)+MediaStore.Audio.keyFor(album)+MediaStore.Audio.keyFor(artist);
+		return Library.KeyFor(name)+Library.KeyFor(album)+Library.KeyFor(artist);
 	}
 
 	public int compareTo(Object another) {
 		int ret;
 		if (another instanceof Song) {
 			Song s2 = (Song) another;
-			ret =  MediaStore.Audio.keyFor(artist).compareTo(MediaStore.Audio.keyFor(s2.artist));
+			/**ret =  Library.KeyFor(artist).compareTo(Library.KeyFor(s2.artist));
 			if (ret == 0) {
-				ret = MediaStore.Audio.keyFor(album).compareTo(MediaStore.Audio.keyFor(s2.album));
+				ret = Library.KeyFor(album).compareTo(Library.KeyFor(s2.album));
 			}
 			if (ret == 0) {
 				ret = disc_num - s2.disc_num; 
 			}
 			if (ret == 0) {
 				ret = (track - s2.track);
-			}
+			}**/
+			ret =  Library.KeyFor(name).compareTo(Library.KeyFor(s2.name));
+			
 		}
 		else
 			ret = 0;
 		return ret;
+	}
+	
+	public void addToLibrary() {
+		Library.addSong(this);
 	}
 	
 }
