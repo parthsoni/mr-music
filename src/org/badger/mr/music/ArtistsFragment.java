@@ -34,7 +34,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 //import com.example.android.supportv4.app.LoaderCustomSupport.AppListFragment;
 
 public class ArtistsFragment extends FragmentActivity {
-	
+	private ArtistListFragment list = null;
 	public ArtistsFragment() {
 		Log.i("ArtistsFragment","Building Artists Fragment");
 	}
@@ -46,9 +46,15 @@ public class ArtistsFragment extends FragmentActivity {
     	FragmentManager fm = getSupportFragmentManager();
         // Create the list fragment and add it as our sole content.
         if (fm.findFragmentById(android.R.id.content) == null) {
-            ArtistListFragment list = new ArtistListFragment();
+            list = new ArtistListFragment();
             fm.beginTransaction().add(android.R.id.content, list).commit();
         }
+    }
+    
+    @Override
+    protected void onResume() {
+    	Log.i("ArtistsFragment","Selecting artist: " + Library.artistFilter);
+    	list.setSelection((list.adapter.getPosition(Library.getArtist(Library.artistFilter))));
     }
     
        
@@ -88,8 +94,14 @@ public class ArtistsFragment extends FragmentActivity {
             adapter = new ArtistListAdapter<Artist>(MrMusic.context,  artistList);
             //adapter.insert("All Artists", 0);
             Log.i("ArtistListFragment","Created Artist Adapter. Items: " +adapter.getCount());
+            
             setListAdapter(adapter);
-             
+            if (Library.artistFilter != "" )
+            {
+            	Log.i("ArtistListFragment"," Setting Focus on " + Library.artistFilter);
+                this.setSelection(adapter.getPosition(Library.getArtist(Library.artistFilter)));
+                
+            } 
             // Start out with a progress indicator.
             //setListShown(false);
 
