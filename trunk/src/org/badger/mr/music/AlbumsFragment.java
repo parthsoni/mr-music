@@ -93,6 +93,11 @@ public class AlbumsFragment extends FragmentActivity {
     		 adapter = new AlbumListAdapter<Album>(MrMusic.context,albumList);
     		 Log.i("AlbumListFragment","Created Filtered Album List. Size: " + adapter.getCount());
              setListAdapter(adapter);
+             if (Library.albumFilter != "" )
+             {
+             	Log.i("AlbumsListFragment"," Setting Focus on " + Library.albumFilter);
+                 this.setSelection(adapter.getPosition(Library.getAlbum(Library.albumFilter)));
+             } 
              
     	}
     	@Override

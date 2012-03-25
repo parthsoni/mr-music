@@ -22,12 +22,6 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 public class Library {
-	//public static ArrayList<Song> songs = new ArrayList<Song>();
-	//public static LinkedHashMap<String,Song> songs = new LinkedHashMap<String,Song>();
-	//public static LinkedHashMap<String,Artist> artists = new LinkedHashMap<String,Artist>();
-	//public static LinkedHashMap<String,Album> albums = new LinkedHashMap<String,Album>();
-	//public static LinkedHashMap<String,Album> filteredAlbums = new LinkedHashMap<String,Album>();
-	//public static LinkedHashMap<String,Song> filteredSongs = new LinkedHashMap<String,Song>();
 	public static SortedMap<String,Song> songs = new TreeMap<String,Song>();
 	public static SortedMap<String,Artist> artists = new TreeMap<String,Artist>();
 	public static SortedMap<String,Album> albums = new TreeMap<String,Album>();
@@ -35,9 +29,6 @@ public class Library {
 	public static SortedMap<String,Song> filteredSongs = new TreeMap<String,Song>();
 	public static ArrayList<Song> playQueue = new ArrayList<Song>();
 	public static ArrayList<DownloadSong> downloadList = new ArrayList<DownloadSong>();
-	//public static ArrayList<Album> albumBrowseList = new ArrayList<Album>();
-	//public static ArrayList<Song> songBrowseList = new ArrayList<Song>();
-	//public static ArrayList<Artist> artistBrowseList = new ArrayList<Artist>();
 	public static String artistFilter = "";
 	public static String albumFilter = "";
 	public static int playposition;

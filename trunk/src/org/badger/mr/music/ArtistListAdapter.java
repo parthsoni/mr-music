@@ -87,6 +87,7 @@ public class ArtistListAdapter<T> extends ArrayAdapter<T> implements SectionInde
                 TextView tvTitle = (TextView) v.findViewById(R.id.TitleRow);
                 TextView tvAlbumArtist = (TextView) v.findViewById(R.id.SecondRow);
                 //TextView tvLength = (TextView) v.findViewById(R.id.songLength);
+                
                 if (a.HasLocal == Library.HAS_SOME)
                	 ivLocal.setVisibility(View.VISIBLE);
                 else
@@ -105,6 +106,7 @@ public class ArtistListAdapter<T> extends ArrayAdapter<T> implements SectionInde
                 }
                 tvTitle.setTextSize(font_size);
                 tvAlbumArtist.setVisibility(View.GONE);
+              
                 // tvLength.setText(s.getTime());
         }
         return v;
